@@ -7,7 +7,7 @@ import {
   Card, 
   Button, 
   Input, 
-  TextArea,
+  Textarea,
   Switch
 } from '@heroui/react'
 import { 
@@ -204,7 +204,7 @@ export default function NewCourse() {
                       <FileText className="w-4 h-4 inline mr-2 text-blue-700" />
                       Descripción
                     </label>
-                    <TextArea
+                    <Textarea
                       placeholder="Describe el contenido del curso..."
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
