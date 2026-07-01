@@ -191,16 +191,13 @@ export default function Home() {
           image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5y9P2nK_PdaFsC-fIKpJfyUXA3d7X01vxWXgELxKtReZ8kxZzBlwh7ec&s=10',
           slug: 'tintas'
         },
-        { 
-          name: 'Cabezales', 
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwHTx7nDAoecuVPr3EE-6rdYK8IDTluSkCkyUxCSxwgA&s=10',
-          slug: 'cabezales'
-        },
+        
         { 
           name: 'Cartuchos', 
           image: 'https://www.123tinta.es/image/Canon_PG-575CL-576_Pack_ahorro_negro_y_color_marca_123tinta_130731_m1_big.jpg',
           slug: 'cartuchos'
         },
+        
         { 
           name: 'Repuestos de Electrónica', 
           image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPIQ_23GQGtoJpehSSTWuz18_lp3eRT5ZA8C8dKKEL9Bl5xscoyl0r8Hw&s=10',
