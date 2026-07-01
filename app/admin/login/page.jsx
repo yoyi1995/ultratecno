@@ -85,7 +85,7 @@ export default function AdminLogin() {
                   input: "text-base",
                   inputWrapper: "h-12 hover:border-blue-500 transition-colors"
                 }}
-                isRequired
+                required
               />
             </div>
 
@@ -101,11 +101,11 @@ export default function AdminLogin() {
                 onChange={(e) => setPassword(e.target.value)}
                 variant="bordered"
                 size="lg"
-                classNames={{
+                className={{
                   input: "text-base",
                   inputWrapper: "h-12 hover:border-blue-500 transition-colors"
                 }}
-                isRequired
+                required
               />
             </div>
 
