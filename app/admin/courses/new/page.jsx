@@ -7,7 +7,7 @@ import {
   Card, 
   Button, 
   Input, 
-  Textarea,
+  TextArea,
   Switch
 } from '@heroui/react'
 import { 
@@ -151,7 +151,6 @@ export default function NewCourse() {
                       value={formData.title}
                       onChange={(e) => setFormData({...formData, title: e.target.value})}
                       variant="bordered"
-                      required
                       className="w-full"
                       classNames={{
                         input: "text-base",
@@ -171,7 +170,6 @@ export default function NewCourse() {
                       value={formData.price}
                       onChange={(e) => setFormData({...formData, price: e.target.value})}
                       variant="bordered"
-                      required
                       className="w-full"
                       classNames={{
                         input: "text-base",
@@ -204,13 +202,12 @@ export default function NewCourse() {
                       <FileText className="w-4 h-4 inline mr-2 text-blue-700" />
                       Descripción
                     </label>
-                    <Textarea
+                    <TextArea
                       placeholder="Describe el contenido del curso..."
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
                       variant="bordered"
-                      rows={5}
-                      required
+                      minRows={5}
                       className="w-full"
                       classNames={{
                         input: "text-base",
@@ -318,25 +315,25 @@ export default function NewCourse() {
               </Card>
 
               <div className="flex flex-col gap-3">
-  <Button
-    type="submit"
-    size="md"
-    fullWidth
-    isLoading={loading}
-    className="h-11 text-base font-semibold text-white bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-blue-950 shadow-lg rounded-xl"
-  >
-    {loading ? 'Guardando...' : 'Guardar Curso'}
-  </Button>
-  <Button
-    type="button"
-    size="md"
-    fullWidth
-    onPress={() => router.back()}
-    className="h-11 text-base font-semibold text-white bg-gradient-to-r from-slate-600 to-slate-800 hover:from-slate-700 hover:to-slate-900 shadow-md rounded-xl"
-  >
-    Cancelar
-  </Button>
-</div>
+                <Button
+                  type="submit"
+                  size="md"
+                  fullWidth
+                  isLoading={loading}
+                  className="h-11 text-base font-semibold text-white bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-blue-950 shadow-lg rounded-xl"
+                >
+                  {loading ? 'Guardando...' : 'Guardar Curso'}
+                </Button>
+                <Button
+                  type="button"
+                  size="md"
+                  fullWidth
+                  onPress={() => router.back()}
+                  className="h-11 text-base font-semibold text-white bg-gradient-to-r from-slate-600 to-slate-800 hover:from-slate-700 hover:to-slate-900 shadow-md rounded-xl"
+                >
+                  Cancelar
+                </Button>
+              </div>
             </div>
           </div>
         </form>
