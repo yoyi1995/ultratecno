@@ -1,0 +1,260 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre del Producto"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "slug",
+        "type": "slug",
+        "title": "URL (Slug)"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Repuestos",
+              "value": "repuestos"
+            },
+            {
+              "title": "Tintas",
+              "value": "tintas"
+            },
+            {
+              "title": "Flex",
+              "value": "flex"
+            },
+            {
+              "title": "Accesorios",
+              "value": "accesorios"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "repuestos",
+                  "tintas",
+                  "flex",
+                  "accesorios"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "category",
+        "type": "string",
+        "title": "Categoría"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ]
+          }
+        ],
+        "name": "price",
+        "type": "number",
+        "title": "Precio"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Texto alternativo"
+          }
+        ],
+        "name": "image",
+        "type": "image",
+        "title": "Imagen del Producto"
+      },
+      {
+        "rows": 3,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "initialValue": true,
+        "name": "inStock",
+        "type": "boolean",
+        "title": "Disponible en stock"
+      },
+      {
+        "description": "Déjalo vacío para usar el mensaje automático",
+        "name": "whatsappMessage",
+        "type": "string",
+        "title": "Mensaje personalizado para WhatsApp (opcional)"
+      }
+    ],
+    "name": "product",
+    "type": "document",
+    "title": "Productos"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Nombre del Curso"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "slug",
+        "type": "slug",
+        "title": "URL (Slug)"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Imagen del Curso"
+      },
+      {
+        "rows": 5,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "description",
+        "type": "text",
+        "title": "Descripción del Curso"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ]
+          }
+        ],
+        "name": "price",
+        "type": "number",
+        "title": "Precio del Curso"
+      },
+      {
+        "description": "Ej: \"4 semanas\", \"20 horas\"",
+        "name": "duration",
+        "type": "string",
+        "title": "Duración"
+      },
+      {
+        "initialValue": true,
+        "name": "available",
+        "type": "boolean",
+        "title": "Curso disponible"
+      }
+    ],
+    "name": "course",
+    "type": "document",
+    "title": "Cursos"
+  }
+]
