@@ -1,134 +1,233 @@
-import { Card, Button, Chip } from '@heroui/react'
-import { Package, BookOpen, Phone, Mail, MapPin, ArrowRight, Star, Shield, Truck, Award, Clock, DollarSign } from 'lucide-react'
+"use client";
+import { Card, Button, Chip, Dropdown, DropdownTrigger, DropdownMenu, DropdownPopover, DropdownItem } from '@heroui/react'
+import { 
+  Package, BookOpen, Phone, Mail, MapPin, ArrowRight, Star, Shield, Truck, 
+  Award, Clock, DollarSign, ChevronDown, Laptop, Printer, Cpu, ShieldCheck, 
+  Plug, Headphones, Zap, Lightbulb 
+} from 'lucide-react'
 import Link from 'next/link'
 import AnimatedText from '@/components/AnimatedText'
+import { useRouter } from "next/navigation";
+import CartDropdown from '@/components/CartDropdown'
+
 export default function Home() {
+const router = useRouter();
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-      {/* Navbar */}
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-slate-100">
+      {/* Navbar - Estilo Computron */}
       <nav className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
+            {/* Logo */}
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-linear-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-lg">U</span>
               </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-bold bg-linear-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
                   UltraTecno
                 </h1>
                 <p className="text-xs text-gray-500">Más allá de la Tecnología</p>
               </div>
             </Link>
 
-            <div className="hidden md:flex items-center gap-6">
-              <Link href="/products" className="text-gray-700 hover:text-blue-700 transition-colors font-medium">
-                Productos
+            {/* Centro: Botón Categorías + Menú Horizontal */}
+<div className="hidden lg:flex items-center gap-2">
+  <div className="relative z-50">
+    <Dropdown>
+  <DropdownTrigger>
+    <div
+      role="button"
+      tabIndex={0}
+      className="bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-full px-4 py-2 inline-flex items-center gap-2 shadow-sm cursor-pointer"
+    >
+      <span className="text-white">Categorías</span>
+      <ChevronDown size={18} className="ml-2 text-white" />
+    </div>
+  </DropdownTrigger>
+
+  <DropdownPopover>
+    <DropdownMenu
+      className="bg-white text-slate-900 rounded-2xl shadow-xl ring-1 ring-slate-200"
+      aria-label="Categorías"
+      onAction={(key) => router.push(`/products?category=${key}`)}
+    >
+      <DropdownItem key="laptops">
+        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
+          <Laptop size={18} className="text-blue-700" />
+          <span className="font-medium text-slate-900">LAPTOPS</span>
+        </div>
+      </DropdownItem>
+
+      <DropdownItem key="impresoras">
+        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
+          <Printer size={18} className="text-blue-700" />
+          <span className="font-medium text-slate-900">IMPRESORAS</span>
+        </div>
+      </DropdownItem>
+
+      <DropdownItem key="electronica">
+        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
+          <Cpu size={18} className="text-blue-700" />
+          <span className="font-medium text-slate-900">ELECTRÓNICA</span>
+        </div>
+      </DropdownItem>
+
+      <DropdownItem key="software">
+        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
+          <ShieldCheck size={18} className="text-blue-700" />
+          <span className="font-medium text-slate-900">SOFTWARE Y ANTIVIRUS</span>
+        </div>
+      </DropdownItem>
+
+      <DropdownItem key="cables">
+        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
+          <Plug size={18} className="text-blue-700" />
+          <span className="font-medium text-slate-900">CABLES Y ADAPTADORES</span>
+        </div>
+      </DropdownItem>
+
+      <DropdownItem key="multimedia">
+        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
+          <Headphones size={18} className="text-blue-700" />
+          <span className="font-medium text-slate-900">MULTIMEDIA Y ACCESORIOS</span>
+        </div>
+      </DropdownItem>
+
+      <DropdownItem key="proteccion">
+        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
+          <Zap size={18} className="text-blue-700" />
+          <span className="font-medium text-slate-900">PROTECCIÓN ELÉCTRICA</span>
+        </div>
+      </DropdownItem>
+
+      <DropdownItem key="consejos">
+        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
+          <Lightbulb size={18} className="text-blue-700" />
+          <span className="font-medium text-slate-900">CONSEJOS Y TIPS</span>
+        </div>
+      </DropdownItem>
+    </DropdownMenu>
+  </DropdownPopover>
+</Dropdown>
+  </div>
+
+              {/* PESTAÑAS HORIZONTALES - estilo uniforme */}
+              <Link href="/products" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
+                TIENDA
               </Link>
-              <Link href="/courses" className="text-gray-700 hover:text-blue-700 transition-colors font-medium">
-                Cursos
+              <Link href="/mantenimiento" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
+                MANTENIMIENTO PREVENTIVO
               </Link>
-              <Link href="/contact" className="text-gray-700 hover:text-blue-700 transition-colors font-medium">
-                Contacto
+              <Link href="/reparaciones" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
+                REPARACIONES
               </Link>
+              <Link href="/quienes-somos" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
+                QUIENES SOMOS
+              </Link>
+              <Link href="/contact" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
+                CONTACTO
+              </Link>
+              {/* Icono del carrito en el navbar - estilo uniforme */}
+              <div className="px-1">
+                <CartDropdown />
+              </div>
               <Link href="/admin/login">
-                <Button
-                  size="sm"
-                  className="bg-gradient-to-r from-blue-700 to-blue-900 text-white hover:from-blue-800 hover:to-blue-950 rounded-xl"
-                >
+                <button className="px-3 py-2 bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg transition-colors text-sm">
                   Admin
-                </Button>
+                </button>
               </Link>
             </div>
           </div>
         </div>
       </nav>
 
-     {/* Hero Section */}
-<section className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900 text-white py-20 px-4">
-  <div className="absolute inset-0 overflow-hidden">
-    <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"></div>
-    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600/30 rounded-full blur-3xl"></div>
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-3xl"></div>
-  </div>
-
-  <div className="container mx-auto max-w-7xl relative z-10">
-    <div className="grid md:grid-cols-2 gap-12 items-center">
-      <div>
-        <Chip color="warning" variant="soft" className="mb-4">
-          <Star size={16} className="mr-1" />
-          Tienda #1 en Tecnología
-        </Chip>
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-          Bienvenido a <span className="text-blue-100">UltraTecno</span>
-          <span className="block mt-2 min-h-[80px]">
-            <AnimatedText />
-          </span>
-        </h1>
-        <p className="text-xl text-blue-100 mb-8">
-          Más allá de la Tecnología. Encuentra repuestos originales, componentes electrónicos, tintas y mucho más.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Link href="/products">
-            <Button
-              size="lg"
-              className="bg-white text-blue-900 hover:bg-blue-50 shadow-xl rounded-xl font-semibold inline-flex items-center justify-center gap-2"
-            >
-              Ver Productos
-              <ArrowRight size={20} />
-            </Button>
-          </Link>
-          <Link href="/courses">
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white/10 rounded-xl font-semibold"
-            >
-              Ver Cursos
-            </Button>
-          </Link>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-linear-to-br from-blue-700 via-blue-800 to-blue-900 text-white py-20 px-4">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600/30 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-blue-500/10 rounded-full blur-3xl"></div>
         </div>
-      </div>
 
-      <div className="hidden md:block">
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded-3xl blur-2xl opacity-30"></div>
-          <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
-                <Package className="w-12 h-12 mx-auto mb-2" />
-                <p className="text-2xl font-bold">500+</p>
-                <p className="text-sm text-blue-100">Productos</p>
+        <div className="container mx-auto max-w-7xl relative z-10">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <Chip color="warning" variant="soft" className="mb-4">
+                <Star size={16} className="mr-1" />
+                Tienda #1 en Tecnología
+              </Chip>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Bienvenido a <span className="text-blue-100">UltraTecno</span>
+                <span className="block mt-2 min-h-20">
+                  <AnimatedText />
+                </span>
+              </h1>
+              <p className="text-xl text-blue-100 mb-8">
+                Más allá de la Tecnología. Encuentra repuestos originales, componentes electrónicos, tintas y mucho más.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/products">
+                  <Button
+                    size="lg"
+                    className="bg-white text-blue-900 hover:bg-blue-50 shadow-xl rounded-xl font-semibold inline-flex items-center justify-center gap-2"
+                  >
+                    Ver Productos
+                    <ArrowRight size={20} />
+                  </Button>
+                </Link>
+                <Link href="/courses">
+                  <Button
+                    size="lg"
+                    className="bg-white/10 border border-white/30 text-white hover:bg-white/20 shadow-xl rounded-xl font-semibold inline-flex items-center justify-center gap-2"
+                  >
+                    Ver Cursos
+                    <ArrowRight size={20} />
+                  </Button>
+                </Link>
               </div>
-              <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
-                <BookOpen className="w-12 h-12 mx-auto mb-2" />
-                <p className="text-2xl font-bold">50+</p>
-                <p className="text-sm text-blue-100">Cursos</p>
-              </div>
-              <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
-                <Shield className="w-12 h-12 mx-auto mb-2" />
-                <p className="text-2xl font-bold">100%</p>
-                <p className="text-sm text-blue-100">Original</p>
-              </div>
-              <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
-                <Truck className="w-12 h-12 mx-auto mb-2" />
-                <p className="text-2xl font-bold">24h</p>
-                <p className="text-sm text-blue-100">Envío</p>
+            </div>
+
+            <div className="hidden md:block">
+              <div className="relative">
+                <div className="absolute inset-0 bg-linear-to-r from-blue-400 to-blue-600 rounded-3xl blur-2xl opacity-30"></div>
+                <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
+                      <Package className="w-12 h-12 mx-auto mb-2" />
+                      <p className="text-2xl font-bold">500+</p>
+                      <p className="text-sm text-blue-100">Productos</p>
+                    </div>
+                    <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
+                      <BookOpen className="w-12 h-12 mx-auto mb-2" />
+                      <p className="text-2xl font-bold">50+</p>
+                      <p className="text-sm text-blue-100">Cursos</p>
+                    </div>
+                    <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
+                      <Shield className="w-12 h-12 mx-auto mb-2" />
+                      <p className="text-2xl font-bold">100%</p>
+                      <p className="text-sm text-blue-100">Original</p>
+                    </div>
+                    <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
+                      <Truck className="w-12 h-12 mx-auto mb-2" />
+                      <p className="text-2xl font-bold">24h</p>
+                      <p className="text-sm text-blue-100">Envío</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* Features Section */}
       <section className="py-16 px-4 bg-white">
         <div className="container mx-auto max-w-7xl">
           <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <div className="w-16 h-16 bg-linear-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Shield className="w-8 h-8 text-white" />
               </div>
               <h3 className="font-bold text-gray-800 mb-2">Garantía Total</h3>
@@ -136,7 +235,7 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <div className="w-16 h-16 bg-linear-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Truck className="w-8 h-8 text-white" />
               </div>
               <h3 className="font-bold text-gray-800 mb-2">Envío Rápido</h3>
@@ -144,7 +243,7 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <div className="w-16 h-16 bg-linear-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Award className="w-8 h-8 text-white" />
               </div>
               <h3 className="font-bold text-gray-800 mb-2">Expertos</h3>
@@ -152,7 +251,7 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <div className="w-16 h-16 bg-linear-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Phone className="w-8 h-8 text-white" />
               </div>
               <h3 className="font-bold text-gray-800 mb-2">Soporte 24/7</h3>
@@ -163,159 +262,154 @@ export default function Home() {
       </section>
 
       {/* Categorías Visuales */}
-<section className="py-16 px-4 bg-gradient-to-br from-slate-50 to-blue-50">
-  <div className="container mx-auto max-w-7xl">
-    <div className="text-center mb-12">
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-        Explora por Categoría
-      </h2>
-      <p className="text-gray-600 text-lg">
-        Selecciona una categoría y encuentra lo que necesitas
-      </p>
-    </div>
-
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-      {[
-        { 
-          name: 'Repuestos de Impresoras', 
-          image: 'https://tiendaeconoprint.com/cdn/shop/products/image_2048x.png?v=1754239287',
-          slug: 'impresoras'
-        },
-        { 
-          name: 'Repuestos de Laptops', 
-          image: 'https://s.alicdn.com/@sc04/kf/H2f0adfcac4714ff3852605421ebcbc81y.jpg',
-          slug: 'laptops'
-        },
-        { 
-          name: 'Tintas Epson', 
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5y9P2nK_PdaFsC-fIKpJfyUXA3d7X01vxWXgELxKtReZ8kxZzBlwh7ec&s=10',
-          slug: 'tintas'
-        },
-        
-        { 
-          name: 'Cartuchos', 
-          image: 'https://www.123tinta.es/image/Canon_PG-575CL-576_Pack_ahorro_negro_y_color_marca_123tinta_130731_m1_big.jpg',
-          slug: 'cartuchos'
-        },
-        
-        { 
-          name: 'Repuestos de Electrónica', 
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPIQ_23GQGtoJpehSSTWuz18_lp3eRT5ZA8C8dKKEL9Bl5xscoyl0r8Hw&s=10',
-          slug: 'electronica'
-        },
-      ].map((category, index) => (
-        <Link 
-          key={index} 
-          href={`/products?category=${category.slug}`}
-          className="group"
-        >
-          <div className="flex flex-col items-center">
-           <div className="relative w-24 h-24 md:w-32 md:h-32 mb-3">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity"></div>
-              <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white shadow-xl group-hover:scale-110 transition-transform duration-300">
-                <img 
-                  src={category.image} 
-                  alt={category.name}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </div>
-            </div>
-            <h3 className="text-sm md:text-base font-bold text-gray-800 text-center group-hover:text-blue-700 transition-colors">
-              {category.name}
-            </h3>
-            <p className="text-xs text-gray-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              Ver productos →
+      <section className="py-16 px-4 bg-linear-to-br from-slate-50 to-blue-50">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              Explora por Categoría
+            </h2>
+            <p className="text-gray-600 text-lg">
+              Selecciona una categoría y encuentra lo que necesitas
             </p>
           </div>
-        </Link>
-      ))}
-    </div>
-  </div>
-</section>
 
-{/* Cursos Destacados */}
-<section className="py-16 px-4 bg-white">
-  <div className="container mx-auto max-w-7xl">
-    <div className="text-center mb-12">
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-        Cursos Destacados
-      </h2>
-      <p className="text-gray-600 text-lg">
-        Aprende con los mejores expertos en tecnología
-      </p>
-    </div>
-
-    <div className="grid md:grid-cols-3 gap-8">
-      {[
-        {
-          title: 'Reparación de Laptops',
-          description: 'Aprende a diagnosticar y reparar laptops desde cero',
-          price: '150',
-          duration: '4 semanas',
-          image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&h=300&fit=crop',
-        },
-        {
-          title: 'Reparación de Impresoras',
-          description: 'Domina el mantenimiento de impresoras Epson, HP y Canon',
-          price: '120',
-          duration: '3 semanas',
-          image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=400&h=300&fit=crop',
-        },
-        {
-          title: 'Electrónica Básica',
-          description: 'Fundamentos de electrónica y reparación de componentes',
-          price: '100',
-          duration: '2 semanas',
-          image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop',
-        },
-      ].map((course, index) => (
-        <Card key={index} className="bg-white hover:shadow-2xl transition-shadow border-0 overflow-hidden group">
-          <div className="relative h-48 overflow-hidden">
-            <img 
-              src={course.image} 
-              alt={course.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-            <div className="absolute top-4 right-4">
-              <Chip color="success" variant="soft" className="rounded-lg font-semibold">
-                Disponible
-              </Chip>
-            </div>
-          </div>
-          <div className="p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-2">{course.title}</h3>
-            <p className="text-gray-600 text-sm mb-4 line-clamp-2">{course.description}</p>
-            <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
-              <span className="flex items-center gap-1">
-                <Clock size={16} className="text-blue-600" />
-                {course.duration}
-              </span>
-              <span className="flex items-center gap-1 font-bold text-blue-900 text-lg">
-                <DollarSign size={18} />
-                {course.price}
-              </span>
-            </div>
-            <Link href="/courses">
-              <Button
-                fullWidth
-                className="bg-gradient-to-r from-blue-700 to-blue-900 text-white hover:from-blue-800 hover:to-blue-950 rounded-xl font-semibold"
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {[
+              { 
+                name: 'Repuestos de Impresoras', 
+                image: 'https://tiendaeconoprint.com/cdn/shop/products/image_2048x.png?v=1754239287',
+                slug: 'impresoras'
+              },
+              { 
+                name: 'Repuestos de Laptops', 
+                image: 'https://s.alicdn.com/@sc04/kf/H2f0adfcac4714ff3852605421ebcbc81y.jpg',
+                slug: 'laptops'
+              },
+              { 
+                name: 'Tintas Epson', 
+                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5y9P2nK_PdaFsC-fIKpJfyUXA3d7X01vxWXgELxKtReZ8kxZzBlwh7ec&s=10',
+                slug: 'tintas'
+              },
+              { 
+                name: 'Cartuchos', 
+                image: 'https://www.123tinta.es/image/Canon_PG-575CL-576_Pack_ahorro_negro_y_color_marca_123tinta_130731_m1_big.jpg',
+                slug: 'cartuchos'
+              },
+              { 
+                name: 'Repuestos de Electrónica', 
+                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPIQ_23GQGtoJpehSSTWuz18_lp3eRT5ZA8C8dKKEL9Bl5xscoyl0r8Hw&s=10',
+                slug: 'electronica'
+              },
+            ].map((category, index) => (
+              <Link 
+                key={index} 
+                href={`/products?category=${category.slug}`}
+                className="group"
               >
-                Ver Más Cursos
-              </Button>
-            </Link>
+                <div className="flex flex-col items-center">
+                  <div className="relative w-24 h-24 md:w-32 md:h-32 mb-3">
+                    <div className="absolute inset-0 bg-linear-to-br from-blue-600 to-blue-800 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                    <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white shadow-xl group-hover:scale-110 transition-transform duration-300">
+                      <img 
+                        src={category.image} 
+                        alt={category.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-blue-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                  </div>
+                  <h3 className="text-sm md:text-base font-bold text-gray-800 text-center group-hover:text-blue-700 transition-colors">
+                    {category.name}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Ver productos →
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
-        </Card>
-      ))}
-    </div>
-  </div>
-</section>
+        </div>
+      </section>
 
+      {/* Cursos Destacados */}
+      <section className="py-16 px-4 bg-white">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              Cursos Destacados
+            </h2>
+            <p className="text-gray-600 text-lg">
+              Aprende con los mejores expertos en tecnología
+            </p>
+          </div>
 
-
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                title: 'Reparación de Laptops',
+                description: 'Aprende a diagnosticar y reparar laptops desde cero',
+                price: '150',
+                duration: '4 semanas',
+                image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&h=300&fit=crop',
+              },
+              {
+                title: 'Reparación de Impresoras',
+                description: 'Domina el mantenimiento de impresoras Epson, HP y Canon',
+                price: '120',
+                duration: '3 semanas',
+                image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=400&h=300&fit=crop',
+              },
+              {
+                title: 'Electrónica Básica',
+                description: 'Fundamentos de electrónica y reparación de componentes',
+                price: '100',
+                duration: '2 semanas',
+                image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop',
+              },
+            ].map((course, index) => (
+              <Card key={index} className="bg-white hover:shadow-2xl transition-shadow border-0 overflow-hidden group">
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={course.image} 
+                    alt={course.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-4 right-4">
+                    <Chip color="success" variant="soft" className="rounded-lg font-semibold">
+                      Disponible
+                    </Chip>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">{course.title}</h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{course.description}</p>
+                  <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
+                    <span className="flex items-center gap-1">
+                      <Clock size={16} className="text-blue-600" />
+                      {course.duration}
+                    </span>
+                    <span className="flex items-center gap-1 font-bold text-blue-900 text-lg">
+                      <DollarSign size={18} />
+                      {course.price}
+                    </span>
+                  </div>
+                  <Link href="/courses">
+                    <Button
+                      fullWidth
+                      className="bg-linear-to-r from-blue-700 to-blue-900 text-white hover:from-blue-800 hover:to-blue-950 rounded-xl font-semibold"
+                    >
+                      Ver Más Cursos
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-to-br from-blue-700 to-blue-900 text-white">
+      <section className="py-16 px-4 bg-linear-to-br from-blue-700 to-blue-900 text-white">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             ¿Necesitas ayuda con tu impresora?
@@ -338,7 +432,7 @@ export default function Home() {
             <Link href="/contact">
               <Button
                 size="lg"
-                variant="outline"
+                variant="ghost"
                 className="border-white text-white hover:bg-white/10 rounded-xl font-semibold"
               >
                 <Mail className="mr-2" size={20} />
@@ -355,7 +449,7 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">U</span>
                 </div>
                 <div>
