@@ -130,15 +130,10 @@ const router = useRouter();
                 CONTACTO
               </Link>
               {/* Icono del carrito en el navbar - estilo uniforme */}
-              <div className="px-1">
-                <CartDropdown />
-              </div>
-              <Link href="/admin/login">
-                <button className="px-3 py-2 bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg transition-colors text-sm">
-                  Admin
-                </button>
-              </Link>
-            </div>
+               <div className="px-1">
+                 <CartDropdown />
+               </div>
+             </div>
           </div>
         </div>
       </nav>
