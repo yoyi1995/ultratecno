@@ -7,7 +7,7 @@ import { Card, Button, Chip } from '@heroui/react'
 import { Search, ShoppingCart, MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useCart } from '@/hooks/useCart'
-import CartDropdown from '@/components/CartDropdown'
+import Navbar from '@/components/Navbar'
 
 interface Product {
   id: string | number
@@ -218,46 +218,7 @@ function ProductsPageContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-      {/* Navbar simple */}
-      <nav className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-40 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">U</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                  UltraTecno
-                </h1>
-                <p className="text-xs text-gray-500">Más allá de la Tecnología</p>
-              </div>
-            </Link>
-            <div className="flex items-center gap-1">
-              <Link href="/" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                Inicio
-              </Link>
-              <Link href="/products" className="px-3 py-2 text-blue-700 font-semibold rounded-lg text-sm">
-                TIENDA
-              </Link>
-              <Link href="/quienes-somos" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                QUIENES SOMOS
-              </Link>
-              <Link href="/contact" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                CONTACTO
-              </Link>
-              <div className="px-1">
-                <CartDropdown />
-              </div>
-              <Link href="/admin/login">
-                <button className="px-3 py-2 bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg transition-colors text-sm">
-                  Admin
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Header */}
       <div className="bg-gradient-to-br from-blue-700 to-blue-900 text-white py-12 px-4">
