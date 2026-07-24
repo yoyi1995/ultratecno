@@ -3,7 +3,8 @@
 import { Card, Button, Accordion, AccordionItem } from '@heroui/react'
 import { Shield, Zap, DollarSign, Clock, Laptop, Cpu, Printer, Gamepad2, Wrench, CheckCircle, MessageCircle, Phone } from 'lucide-react'
 import Link from 'next/link'
-import CartDropdown from '@/components/CartDropdown'
+import Navbar from '@/components/Navbar'
+import { useState, useEffect } from 'react'
 
 // Página de MANTENIMIENTO PREVENTIVO
 // Muestra servicios y beneficios del mantenimiento
@@ -12,49 +13,40 @@ export default function MantenimientoPage() {
   const phoneNumber = '593995709352'
   const whatsAppUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent('¡Hola! Quiero agendar un servicio de mantenimiento preventivo.')}`
 
+  const getWhatsAppUrl = (servicio: string) => {
+    const message = `¡Hola! Quiero agendar servicio de mantenimiento para: ${servicio}`
+    return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
+  }
+
+  // Estado para modal
+  const [selectedService, setSelectedService] = useState<string | null>(null)
+
+  const services = [
+    { id: 'laptops', image: 'https://img.magnific.com/foto-gratis/placa-circuito-compensacion-tecnica-computadora-portatil-desmontada_1098-13785.jpg?semt=ais_hybrid&w=740&q=80', title: 'Laptops', icon: Laptop, features: ['Limpieza interna','Cambio de pasta térmica','Ventilación óptima','Optimización de software'], detailedInfo: { description: 'Mantenimiento completo para laptops: limpieza, ventilación y optimización.', process: ['Diagnóstico','Limpieza interna','Revisión de ventilación','Pruebas finales'], additionalServices: ['Cambio de batería','Actualización de RAM'], guarantee: 'Garantía de 30 días en servicio' } },
+    { id: 'pcs', image: 'https://media.gettyimages.com/id/1496911536/es/foto/primer-plano-de-la-torre-de-la-computadora-y-las-manos-de-un-hombre-que-intenta-encontrar-el.jpg?s=612x612&w=gi&k=20&c=5TgrzhXYFN7E5sKIWUxybt98pWrtI9JyZXOh5mkDcps=', title: 'PC / Computadoras', icon: Cpu, features: ['Limpieza de componentes','Mantenimiento de fuente','Actualización de hardware','Ventilación y refrigeración'], detailedInfo: { description: 'Servicio técnico para PCs: limpieza, revisión de fuente y actualizaciones.', process: ['Diagnóstico','Mantenimiento de fuente','Actualización opcional','Pruebas'], additionalServices: ['Mejoras de rendimiento','Instalación de SSD'], guarantee: 'Garantía de 30 días en servicio' } },
+    { id: 'impresoras', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7wI0acGiR6kUTuW1CKo9eEWsjEqWg8thjiSSHjKM4Tw&s=10', title: 'Impresoras', icon: Printer, features: ['Limpieza de cabezales','Calibración de colores','Desobstrucción','Cambio de tintas/tóner'], detailedInfo: { description: 'Mantenimiento y calibración para impresoras de todas las marcas.', process: ['Revisión de cabezales','Calibración','Pruebas de impresión'], additionalServices: ['Cambio de kit de mantenimiento'], guarantee: 'Garantía de 30 días' } },
+    { id: 'consolas', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3jpUHnvhHUoqDfjpCzzBjrlSS64tiks8A4YmetMQkwsobXwLGqnBwE--N&s=10', title: 'PlayStation / Consolas', icon: Gamepad2, features: ['Limpieza interna completa','Cambio de pasta térmica','Mantenimiento de lectores','Ventiladores y disipadores'], detailedInfo: { description: 'Mantenimiento preventivo para consolas para evitar fallas térmicas.', process: ['Apertura y limpieza','Revisión de lectores','Pruebas'], additionalServices: ['Reparación de puertos'], guarantee: 'Garantía de 30 días' } },
+    { id: 'otros', image: 'https://thumbs.dreamstime.com/b/iphone-de-apple-y-reparaci%C3%B3n-de-la-tableta-del-ipad-47125484.jpg', title: 'Otros equipos', icon: Wrench, features: ['Routers y redes','Monitores','Periféricos','Tablets y All-in-One'], detailedInfo: { description: 'Mantenimiento para dispositivos diversos y periféricos.', process: ['Diagnóstico','Mantenimiento específico','Pruebas'], additionalServices: ['Recogida a domicilio'], guarantee: 'Garantía según equipo' } }
+  ]
+
+  const selectedServiceData = services.find(s => s.id === selectedService)
+
+  // Efecto: cerrar con Escape y bloquear scroll cuando el modal está abierto
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setSelectedService(null) }
+    if (selectedService) {
+      document.body.style.overflow = 'hidden'
+      window.addEventListener('keydown', handleKey)
+    }
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', handleKey)
+    }
+  }, [selectedService])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-      {/* Navbar */}
-      <nav className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-40 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">U</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                  UltraTecno
-                </h1>
-                <p className="text-xs text-gray-500">Más allá de la Tecnología</p>
-              </div>
-            </Link>
-            <div className="flex items-center gap-1">
-              <Link href="/" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                Inicio
-              </Link>
-              <Link href="/products" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                TIENDA
-              </Link>
-              <Link href="/mantenimiento" className="px-3 py-2 text-blue-700 font-semibold rounded-lg text-sm">
-                MANTENIMIENTO
-              </Link>
-              <Link href="/reparaciones" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                REPARACIONES
-              </Link>
-              <Link href="/quienes-somos" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                QUIENES SOMOS
-              </Link>
-              <Link href="/contact" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                CONTACTO
-              </Link>
-              <div className="px-1">
-                <CartDropdown />
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-700 to-blue-900 text-white py-16 px-4">
@@ -78,6 +70,68 @@ export default function MantenimientoPage() {
           </a>
         </div>
       </section>
+
+      {/* Modal flotante personalizado */}
+      {selectedServiceData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" aria-modal="true" role="dialog">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setSelectedService(null)} />
+
+          <div className="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 m-4 z-10 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-4">
+              {selectedServiceData.icon && (
+                <selectedServiceData.icon className={`w-8 h-8 text-blue-700`} />
+              )}
+              <h2 className="text-2xl font-bold text-gray-800">Servicio: {selectedServiceData.title}</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-2">Descripción</h3>
+                <p className="text-gray-600">{selectedServiceData.detailedInfo.description}</p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-3">Nuestro proceso</h3>
+                <ol className="space-y-2">
+                  {selectedServiceData.detailedInfo.process.map((step: string, index: number) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="flex-shrink-0 w-6 h-6 bg-blue-700 text-white rounded-full flex items-center justify-center text-xs font-bold">{index + 1}</span>
+                      <span className="text-gray-600">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-3">Servicios relacionados</h3>
+                <ul className="space-y-2">
+                  {selectedServiceData.detailedInfo.additionalServices.map((additional: string, index: number) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <CheckCircle size={16} className="text-green-600" />
+                      <span className="text-gray-600">{additional}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-xl">
+                <div className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-blue-700" />
+                  <span className="font-semibold text-gray-800">Garantía</span>
+                </div>
+                <p className="text-gray-600 mt-1">{selectedServiceData.detailedInfo.guarantee}</p>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4">
+              <Button variant="outline" onPress={() => setSelectedService(null)} className="rounded-xl">Cerrar</Button>
+              <a href={getWhatsAppUrl(selectedServiceData.title)} target="_blank" rel="noopener noreferrer">
+                <Button className="bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold" onPress={() => setSelectedService(null)}>Consultar por WhatsApp</Button>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Beneficios */}
       <section className="py-16 px-4 bg-white">
@@ -117,145 +171,34 @@ export default function MantenimientoPage() {
             Servicios por categoría
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Laptops */}
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Laptop className="w-10 h-10 text-blue-700" />
-                  <h3 className="text-xl font-bold text-gray-800">Laptops</h3>
-                </div>
-                <ul className="space-y-2 text-gray-600 text-sm">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Limpieza interna
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Cambio de pasta térmica
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Ventilación óptima
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Optimización de software
-                  </li>
-                </ul>
-              </div>
-            </Card>
-
-            {/* PC / Computadoras */}
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Cpu className="w-10 h-10 text-blue-700" />
-                  <h3 className="text-xl font-bold text-gray-800">PC / Computadoras</h3>
-                </div>
-                <ul className="space-y-2 text-gray-600 text-sm">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Limpieza de componentes
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Mantenimiento de fuente
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Actualización de hardware
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Ventilación y refrigeración
-                  </li>
-                </ul>
-              </div>
-            </Card>
-
-            {/* Impresoras */}
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Printer className="w-10 h-10 text-blue-700" />
-                  <h3 className="text-xl font-bold text-gray-800">Impresoras</h3>
-                </div>
-                <ul className="space-y-2 text-gray-600 text-sm">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Limpieza de cabezales
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Calibración de colores
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Desobstrucción
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Cambio de tintas/tóner
-                  </li>
-                </ul>
-              </div>
-            </Card>
-
-            {/* PlayStation / Consolas */}
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Gamepad2 className="w-10 h-10 text-blue-700" />
-                  <h3 className="text-xl font-bold text-gray-800">PlayStation / Consolas</h3>
-                </div>
-                <ul className="space-y-2 text-gray-600 text-sm">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Limpieza interna completa
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Cambio de pasta térmica
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Mantenimiento de lectores
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Ventiladores y disipadores
-                  </li>
-                </ul>
-              </div>
-            </Card>
-
-            {/* Otros equipos */}
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Wrench className="w-10 h-10 text-blue-700" />
-                  <h3 className="text-xl font-bold text-gray-800">Otros equipos</h3>
-                </div>
-                <ul className="space-y-2 text-gray-600 text-sm">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Routers y redes
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Monitores
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Periféricos
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Tablets y All-in-One
-                  </li>
-                </ul>
-              </div>
-            </Card>
+            {services.map((service) => {
+              const Icon = service.icon
+              return (
+                <Card key={service.id} className={`relative bg-cover bg-center backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition-shadow cursor-pointer`} style={{ backgroundImage: `url(${service.image})` }} onClick={() => setSelectedService(service.id)}>
+                  <div className="absolute inset-0 bg-black/30" />
+                  <div className="p-6 relative z-10 text-white">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Icon className="w-10 h-10 text-blue-100" />
+                      <h3 className="text-xl font-bold">{service.title}</h3>
+                    </div>
+                    <ul className="space-y-2 text-white/90 text-sm">
+                      {service.features.map((f: string, i: number) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <CheckCircle size={16} className="text-green-200" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-4">
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold" onPress={() => setSelectedService(service.id)}>Ver detalles</Button>
+                      <a href={getWhatsAppUrl(service.title)} target="_blank" rel="noopener noreferrer" className="block mt-2">
+                        <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold" onPress={(e:any) => e?.stopPropagation()}>Consultar por WhatsApp</Button>
+                      </a>
+                    </div>
+                  </div>
+                </Card>
+              )
+            })}
           </div>
         </div>
       </section>

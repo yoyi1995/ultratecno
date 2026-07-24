@@ -1,149 +1,22 @@
-"use client";
-import { Card, Button, Chip, Dropdown, DropdownTrigger, DropdownMenu, DropdownPopover, DropdownItem } from '@heroui/react'
-import { 
-  Package, BookOpen, Phone, Mail, MapPin, ArrowRight, Star, Shield, Truck, 
-  Award, Clock, DollarSign, ChevronDown, Laptop, Printer, Cpu, ShieldCheck, 
-  Plug, Headphones, Zap, Lightbulb 
-} from 'lucide-react'
+'use client'
+import { Card, Button, Chip } from '@heroui/react'
+import { Package, BookOpen, Phone, Mail, MapPin, ArrowRight, Star, Shield, Truck, Award, Clock, DollarSign } from 'lucide-react'
 import Link from 'next/link'
 import AnimatedText from '@/components/AnimatedText'
-import { useRouter } from "next/navigation";
-import CartDropdown from '@/components/CartDropdown'
+import Navbar from '@/components/Navbar'
 
 export default function Home() {
-const router = useRouter();
-
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-slate-100">
-      {/* Navbar - Estilo Computron */}
-      <nav className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-linear-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">U</span>
-              </div>
-              <div className="hidden sm:block">
-                <h1 className="text-xl font-bold bg-linear-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                  UltraTecno
-                </h1>
-                <p className="text-xs text-gray-500">Más allá de la Tecnología</p>
-              </div>
-            </Link>
-
-            {/* Centro: Botón Categorías + Menú Horizontal */}
-<div className="hidden lg:flex items-center gap-2">
-  <div className="relative z-50">
-    <Dropdown>
-  <DropdownTrigger>
-    <div
-      role="button"
-      tabIndex={0}
-      className="bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-full px-4 py-2 inline-flex items-center gap-2 shadow-sm cursor-pointer"
-    >
-      <span className="text-white">Categorías</span>
-      <ChevronDown size={18} className="ml-2 text-white" />
-    </div>
-  </DropdownTrigger>
-
-  <DropdownPopover>
-    <DropdownMenu
-      className="bg-white text-slate-900 rounded-2xl shadow-xl ring-1 ring-slate-200"
-      aria-label="Categorías"
-      onAction={(key) => router.push(`/products?category=${key}`)}
-    >
-      <DropdownItem key="laptops">
-        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
-          <Laptop size={18} className="text-blue-700" />
-          <span className="font-medium text-slate-900">LAPTOPS</span>
-        </div>
-      </DropdownItem>
-
-      <DropdownItem key="impresoras">
-        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
-          <Printer size={18} className="text-blue-700" />
-          <span className="font-medium text-slate-900">IMPRESORAS</span>
-        </div>
-      </DropdownItem>
-
-      <DropdownItem key="electronica">
-        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
-          <Cpu size={18} className="text-blue-700" />
-          <span className="font-medium text-slate-900">ELECTRÓNICA</span>
-        </div>
-      </DropdownItem>
-
-      <DropdownItem key="software">
-        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
-          <ShieldCheck size={18} className="text-blue-700" />
-          <span className="font-medium text-slate-900">SOFTWARE Y ANTIVIRUS</span>
-        </div>
-      </DropdownItem>
-
-      <DropdownItem key="cables">
-        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
-          <Plug size={18} className="text-blue-700" />
-          <span className="font-medium text-slate-900">CABLES Y ADAPTADORES</span>
-        </div>
-      </DropdownItem>
-
-      <DropdownItem key="multimedia">
-        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
-          <Headphones size={18} className="text-blue-700" />
-          <span className="font-medium text-slate-900">MULTIMEDIA Y ACCESORIOS</span>
-        </div>
-      </DropdownItem>
-
-      <DropdownItem key="proteccion">
-        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
-          <Zap size={18} className="text-blue-700" />
-          <span className="font-medium text-slate-900">PROTECCIÓN ELÉCTRICA</span>
-        </div>
-      </DropdownItem>
-
-      <DropdownItem key="consejos">
-        <div className="flex items-center gap-2 px-4 py-2 hover:bg-slate-100">
-          <Lightbulb size={18} className="text-blue-700" />
-          <span className="font-medium text-slate-900">CONSEJOS Y TIPS</span>
-        </div>
-      </DropdownItem>
-    </DropdownMenu>
-  </DropdownPopover>
-</Dropdown>
-  </div>
-
-              {/* PESTAÑAS HORIZONTALES - estilo uniforme */}
-              <Link href="/products" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                TIENDA
-              </Link>
-              <Link href="/mantenimiento" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                MANTENIMIENTO PREVENTIVO
-              </Link>
-              <Link href="/reparaciones" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                REPARACIONES
-              </Link>
-              <Link href="/quienes-somos" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                QUIENES SOMOS
-              </Link>
-              <Link href="/contact" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                CONTACTO
-              </Link>
-              {/* Icono del carrito en el navbar - estilo uniforme */}
-               <div className="px-1">
-                 <CartDropdown />
-               </div>
-             </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-linear-to-br from-blue-700 via-blue-800 to-blue-900 text-white py-20 px-4">
+      <section className="relative overflow-hidden hero-bg bg-cover bg-center text-white py-20 px-4">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600/30 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-blue-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent pointer-events-none" />
         </div>
 
         <div className="container mx-auto max-w-7xl relative z-10">
@@ -153,13 +26,13 @@ const router = useRouter();
                 <Star size={16} className="mr-1" />
                 Tienda #1 en Tecnología
               </Chip>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-2xl">
                 Bienvenido a <span className="text-blue-100">UltraTecno</span>
                 <span className="block mt-2 min-h-20">
                   <AnimatedText />
                 </span>
               </h1>
-              <p className="text-xl text-blue-100 mb-8">
+              <p className="text-xl text-blue-100 mb-8 drop-shadow">
                 Más allá de la Tecnología. Encuentra repuestos originales, componentes electrónicos, tintas y mucho más.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -184,35 +57,7 @@ const router = useRouter();
               </div>
             </div>
 
-            <div className="hidden md:block">
-              <div className="relative">
-                <div className="absolute inset-0 bg-linear-to-r from-blue-400 to-blue-600 rounded-3xl blur-2xl opacity-30"></div>
-                <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
-                      <Package className="w-12 h-12 mx-auto mb-2" />
-                      <p className="text-2xl font-bold">500+</p>
-                      <p className="text-sm text-blue-100">Productos</p>
-                    </div>
-                    <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
-                      <BookOpen className="w-12 h-12 mx-auto mb-2" />
-                      <p className="text-2xl font-bold">50+</p>
-                      <p className="text-sm text-blue-100">Cursos</p>
-                    </div>
-                    <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
-                      <Shield className="w-12 h-12 mx-auto mb-2" />
-                      <p className="text-2xl font-bold">100%</p>
-                      <p className="text-sm text-blue-100">Original</p>
-                    </div>
-                    <div className="bg-white/20 rounded-2xl p-6 text-center hover:bg-white/30 transition-colors">
-                      <Truck className="w-12 h-12 mx-auto mb-2" />
-                      <p className="text-2xl font-bold">24h</p>
-                      <p className="text-sm text-blue-100">Envío</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Right-side feature panel removed to show hero image fully */}
           </div>
         </div>
       </section>

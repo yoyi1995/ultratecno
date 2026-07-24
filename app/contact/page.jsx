@@ -3,6 +3,7 @@
 import { Card, Button } from '@heroui/react'
 import { Phone, Mail, MapPin, Clock, MessageCircle, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
+import Navbar from '@/components/Navbar'
 
 export default function ContactPage() {
   // Tu número de WhatsApp
@@ -12,38 +13,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-      {/* Navbar */}
-      <nav className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-40 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">U</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                  UltraTecno
-                </h1>
-                <p className="text-xs text-gray-500">Más allá de la Tecnología</p>
-              </div>
-            </Link>
-            <div className="flex items-center gap-4">
-              <Link href="/" className="text-gray-700 hover:text-blue-700 transition-colors font-medium">
-                Inicio
-              </Link>
-              <Link href="/products" className="text-gray-700 hover:text-blue-700 transition-colors font-medium">
-                Productos
-              </Link>
-              <Link href="/courses" className="text-gray-700 hover:text-blue-700 transition-colors font-medium">
-                Cursos
-              </Link>
-              <Link href="/contact" className="text-blue-700 font-semibold">
-                Contacto
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Header */}
       <div className="bg-gradient-to-br from-blue-700 to-blue-900 text-white py-16 px-4">
@@ -177,32 +147,19 @@ export default function ContactPage() {
           </Card>
         </div>
 
-        {/* Mapa (Opcional - Puedes agregar tu ubicación de Google Maps) */}
+        {/* Mapa */}
         <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-xl rounded-2xl overflow-hidden">
-          <div className="h-96 bg-gray-200 flex items-center justify-center">
-            <div className="text-center p-8">
-              <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-700 mb-2">
-                ¿Dónde estamos?
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Agrega aquí tu mapa de Google Maps
-              </p>
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-xl rounded-2xl overflow-hidden">
-  <div className="h-96">
-    <iframe 
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.36380571192!2d-79.9501599252489!3d-3.259503340966182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x90330fdb5f7ffb8f%3A0x79a2ef2a7bb0bb78!2sULTRATECNO%20Servicio%20t%C3%A9cnico%20de%20computadoras%20en%20Machala!5e0!3m2!1ses!2sec!4v1782932421661!5m2!1ses!2sec"
-      width="100%" 
-      height="100%" 
-      style={{border:0}} 
-      allowFullScreen="" 
-      loading="lazy" 
-      referrerPolicy="strict-origin-when-cross-origin"
-      title="Ubicación UltraTecno - Machala"
-    ></iframe>
-  </div>
-</Card>
-            </div>
+          <div className="h-96">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.36380571192!2d-79.9501599252489!3d-3.259503340966182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x90330fdb5f7ffb8f%3A0x79a2ef2a7bb0bb78!2sULTRATECNO%20Servicio%20t%C3%A9cnico%20de%20computadoras%20en%20Machala!5e0!3m2!1ses!2sec!4v1782932421661!5m2!1ses!2sec"
+              width="100%" 
+              height="100%" 
+              style={{border:0}} 
+              allowFullScreen="" 
+              loading="lazy" 
+              referrerPolicy="strict-origin-when-cross-origin"
+              title="Ubicación UltraTecno - Machala"
+            ></iframe>
           </div>
         </Card>
       </div>

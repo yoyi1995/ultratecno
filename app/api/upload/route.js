@@ -1,6 +1,48 @@
 import { NextResponse } from 'next/server'
 import cloudinary from '@/lib/cloudinary'
 
+async function readUploadFile(file) {
+  if (!file) return null
+
+  if (typeof file.arrayBuffer === 'function') {
+    return Buffer.from(await file.arrayBuffer())
+  }
+
+  if (typeof file.stream === 'function') {
+    const stream = file.stream()
+
+    if (typeof stream.getReader === 'function') {
+      const reader = stream.getReader()
+      const chunks = []
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        chunks.push(Buffer.from(value))
+      }
+
+      return Buffer.concat(chunks)
+    }
+
+    return new Promise((resolve, reject) => {
+      const chunks = []
+      stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)))
+      stream.on('end', () => resolve(Buffer.concat(chunks)))
+      stream.on('error', reject)
+    })
+  }
+
+  if (file instanceof Buffer) {
+    return file
+  }
+
+  if (file.buffer) {
+    return file.buffer
+  }
+
+  throw new Error('El archivo no puede leerse en el servidor')
+}
+
 export async function POST(request) {
   try {
     const formData = await request.formData()
@@ -10,8 +52,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'No se subió ningún archivo' }, { status: 400 })
     }
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+    const buffer = await readUploadFile(file)
 
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
@@ -35,6 +76,6 @@ export async function POST(request) {
     })
   } catch (error) {
     console.error('Error al subir imagen:', error)
-    return NextResponse.json({ error: 'Error al subir la imagen' }, { status: 500 })
+    return NextResponse.json({ error: error?.message || 'Error al subir la imagen' }, { status: 500 })
   }
 }
