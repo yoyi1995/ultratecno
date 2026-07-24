@@ -1,9 +1,9 @@
 'use client'
 
 import { Card, Button } from '@heroui/react'
-import { Printer, Laptop, Cpu, Monitor, Wrench, DollarSign, Shield, Clock, MessageCircle, CheckCircle } from 'lucide-react'
-import Link from 'next/link'
-import CartDropdown from '@/components/CartDropdown'
+import { Printer, Laptop, Cpu, Monitor, Wrench, DollarSign, Shield, Clock, CheckCircle } from 'lucide-react'
+import Navbar from '@/components/Navbar'
+import { useState, useEffect } from 'react'
 
 // Página de REPARACIONES
 // Muestra servicios de reparación profesional
@@ -17,49 +17,194 @@ export default function ReparacionesPage() {
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
   }
 
+  // Estado para controlar modal
+  const [selectedService, setSelectedService] = useState<string | null>(null)
+
+  // Datos de servicios con características ampliadas
+  const services = [
+    {
+      id: 'impresoras',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7wI0acGiR6kUTuW1CKo9eEWsjEqWg8thjiSSHjKM4Tw&s=10',
+      title: 'Impresoras',
+      icon: Printer,
+      iconColor: 'text-blue-700',
+      bgColor: 'bg-blue-50',
+      features: [
+        'Cambio de cartuchos/tóner',
+        'Reparación de cabezales',
+        'Solución de errores',
+        'Configuración de red'
+      ],
+      detailedInfo: {
+        description: 'Servicio especializado en todas las marcas y modelos de impresoras láser, de inyección y multifuncionales.',
+        process: [
+          'Diagnóstico completo del problema',
+          'Identificación de piezas dañadas',
+          'Reemplazo o reparación necesaria',
+          'Pruebas de calidad',
+          'Entrega con garantía'
+        ],
+        additionalServices: [
+          'Reseteo de impresoras',
+          'Cambio de caja de mantenimiento',
+          'Limpieza profunda de cabezales',
+          'Calibración de colores',
+          'Configuración de impresión a doble cara'
+        ],
+        guarantee: 'Garantía de 90 días en piezas y mano de obra'
+      }
+    },
+    {
+      id: 'laptops',
+      image: 'https://img.magnific.com/foto-gratis/placa-circuito-compensacion-tecnica-computadora-portatil-desmontada_1098-13785.jpg?semt=ais_hybrid&w=740&q=80',
+      title: 'Laptops',
+      icon: Laptop,
+      iconColor: 'text-blue-700',
+      bgColor: 'bg-blue-50',
+      features: [
+        'Cambio de pantallas',
+        'Reparación de teclados',
+        'Solución de sobrecalentamiento',
+        'Recuperación de datos'
+      ],
+      detailedInfo: {
+        description: 'Reparación integral de laptops de todas las marcas: Dell, HP, Lenovo, Acer, Asus, Apple y más.',
+        process: [
+          'Diagnóstico del problema',
+          'Evaluación de componentes',
+          'Presupuesto sin compromiso',
+          'Reparación especializada',
+          'Pruebas funcionales'
+        ],
+        additionalServices: [
+          'Cambio de batería',
+          'Reparación de puertos USB/HDMI',
+          'Reemplazo de discos duros SSD/HDD',
+          'Instalación y reinstalación de sistemas',
+          'Actualización de memoria RAM'
+        ],
+        guarantee: 'Garantía de 90 días en piezas y 30 días en mano de obra'
+      }
+    },
+    {
+      id: 'pcs',
+      image: 'https://media.gettyimages.com/id/1496911536/es/foto/primer-plano-de-la-torre-de-la-computadora-y-las-manos-de-un-hombre-que-intenta-encontrar-el.jpg?s=612x612&w=gi&k=20&c=5TgrzhXYFN7E5sKIWUxybt98pWrtI9JyZXOh5mkDcps=',
+      title: 'PCs / Escritorio',
+      icon: Cpu,
+      iconColor: 'text-blue-700',
+      bgColor: 'bg-blue-50',
+      features: [
+        'Diagnóstico completo',
+        'Reparación de motherboards',
+        'Cambio de fuentes',
+        'Actualización de componentes'
+      ],
+      detailedInfo: {
+        description: 'Servicios de reparación y armado de computadoras de escritorio, PCs gaming, workstations y servidores.',
+        process: [
+          'Revisión de componentes',
+          'Pruebas de hardware',
+          'Identificación de fallas',
+          'Reparación o reemplazo',
+          'Ensamblaje profesional'
+        ],
+        additionalServices: [
+          'Armado de equipos nuevos',
+          'Mejoras de rendimiento',
+          'Overclock seguro',
+          'Refrigeración líquida',
+          'Cableado organizado'
+        ],
+        guarantee: 'Garantía de 90 días en piezas y 30 días en mano de obra'
+      }
+    },
+    {
+      id: 'tvs',
+      image: 'https://media.istockphoto.com/id/1389783400/es/foto/el-hombre-reparando-la-televisi%C3%B3n-rota-en-casa.jpg?s=612x612&w=0&k=20&c=I2XoeFcBHBNjNDvFI0w53YA60fV91MBPNVpy7aFVvpQ=',
+      title: 'TVs / Monitores',
+      icon: Monitor,
+      iconColor: 'text-blue-700',
+      bgColor: 'bg-blue-50',
+      features: [
+        'Reparación de pantallas',
+        'Solución de imagen',
+        'Reparación de audio',
+        'Conexiones HDMI/USB'
+      ],
+      detailedInfo: {
+        description: 'Reparación de televisores LED, LCD, OLED y monitores de todas las marcas y tamaños.',
+        process: [
+          'Diagnóstico de la falla',
+          'Revisión de la placa principal',
+          'Reparación de componentes',
+          'Ajustes de imagen y sonido',
+          'Control de calidad final'
+        ],
+        additionalServices: [
+          'Reparación de placas madres',
+          'Ajuste de colores y contraste',
+          'Reparación de altavoces',
+          'Configuración de puertos HDMI',
+          'Actualización de firmware'
+        ],
+        guarantee: 'Garantía de 60 días en reparaciones'
+      }
+    },
+    {
+      id: 'otros',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3jpUHnvhHUoqDfjpCzzBjrlSS64tiks8A4YmetMQkwsobXwLGqnBwE--N&s=10',
+      title: 'Otros equipos',
+      icon: Wrench,
+      iconColor: 'text-blue-700',
+      bgColor: 'bg-blue-50',
+      features: [
+        'Consolas de videojuegos',
+        'Audio y equipos',
+        'Fuentes de poder',
+        'Periféricos'
+      ],
+      detailedInfo: {
+        description: 'Servicio técnico especializado en equipos electrónicos diversos e industriales.',
+        process: [
+          'Evaluación técnica especializada',
+          'Diagnóstico preciso',
+          'Presupuesto detallado',
+          'Reparación profesional',
+          'Garantía de servicio'
+        ],
+        additionalServices: [
+          'Reparación de consolas (PlayStation, Xbox, Nintendo)',
+          'Equipos de audio y amplificadores',
+          'Fuentes de poder y UPS',
+          'Periféricos y dispositivos USB',
+          'Equipos industriales'
+        ],
+        guarantee: 'Garantía de 30-60 días según el equipo'
+      }
+    }
+  ]
+
+  // Encontrar servicio seleccionado
+  const selectedServiceData = services.find(s => s.id === selectedService)
+
+  // Efecto: cerrar con Escape y bloquear scroll cuando el modal está abierto
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedService(null)
+    }
+    if (selectedService) {
+      document.body.style.overflow = 'hidden'
+      window.addEventListener('keydown', handleKey)
+    }
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', handleKey)
+    }
+  }, [selectedService])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-      {/* Navbar */}
-      <nav className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-40 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">U</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
-                  UltraTecno
-                </h1>
-                <p className="text-xs text-gray-500">Más allá de la Tecnología</p>
-              </div>
-            </Link>
-            <div className="flex items-center gap-1">
-              <Link href="/" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                Inicio
-              </Link>
-              <Link href="/products" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                TIENDA
-              </Link>
-              <Link href="/mantenimiento" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                MANTENIMIENTO
-              </Link>
-              <Link href="/reparaciones" className="px-3 py-2 text-blue-700 font-semibold rounded-lg text-sm">
-                REPARACIONES
-              </Link>
-              <Link href="/quienes-somos" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                QUIENES SOMOS
-              </Link>
-              <Link href="/contact" className="px-3 py-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg font-medium transition-colors text-sm">
-                CONTACTO
-              </Link>
-              <div className="px-1">
-                <CartDropdown />
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-700 to-blue-900 text-white py-16 px-4">
@@ -91,173 +236,114 @@ export default function ReparacionesPage() {
             Nuestros servicios de reparación
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Impresoras */}
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Printer className="w-10 h-10 text-blue-700" />
-                  <h3 className="text-xl font-bold text-gray-800">Impresoras</h3>
-                </div>
-                <ul className="space-y-2 text-gray-600 text-sm mb-6">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Cambio de cartuchos/tóner
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Reparación de cabezales
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Solución de errores
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Configuración de red
-                  </li>
-                </ul>
-                <a href={getWhatsAppUrl('impresora')} target="_blank" rel="noopener noreferrer" className="block">
-                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold">
-                    Consultar por WhatsApp
-                  </Button>
-                </a>
-              </div>
-            </Card>
-
-            {/* Laptops */}
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Laptop className="w-10 h-10 text-blue-700" />
-                  <h3 className="text-xl font-bold text-gray-800">Laptops</h3>
-                </div>
-                <ul className="space-y-2 text-gray-600 text-sm mb-6">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Cambio de pantallas
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Reparación de teclados
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Solución de sobrecalentamiento
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Recuperación de datos
-                  </li>
-                </ul>
-                <a href={getWhatsAppUrl('laptop')} target="_blank" rel="noopener noreferrer" className="block">
-                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold">
-                    Consultar por WhatsApp
-                  </Button>
-                </a>
-              </div>
-            </Card>
-
-            {/* PCs / Escritorio */}
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Cpu className="w-10 h-10 text-blue-700" />
-                  <h3 className="text-xl font-bold text-gray-800">PCs / Escritorio</h3>
-                </div>
-                <ul className="space-y-2 text-gray-600 text-sm mb-6">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Diagnóstico completo
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Reparación de motherboards
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Cambio de fuentes
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Actualización de componentes
-                  </li>
-                </ul>
-                <a href={getWhatsAppUrl('computadora de escritorio')} target="_blank" rel="noopener noreferrer" className="block">
-                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold">
-                    Consultar por WhatsApp
-                  </Button>
-                </a>
-              </div>
-            </Card>
-
-            {/* TVs / Monitores */}
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Monitor className="w-10 h-10 text-blue-700" />
-                  <h3 className="text-xl font-bold text-gray-800">TVs / Monitores</h3>
-                </div>
-                <ul className="space-y-2 text-gray-600 text-sm mb-6">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Reparación de pantallas
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Solución de imagen
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Reparación de audio
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Conexiones HDMI/USB
-                  </li>
-                </ul>
-                <a href={getWhatsAppUrl('televisor o monitor')} target="_blank" rel="noopener noreferrer" className="block">
-                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold">
-                    Consultar por WhatsApp
-                  </Button>
-                </a>
-              </div>
-            </Card>
-
-            {/* Otros */}
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Wrench className="w-10 h-10 text-blue-700" />
-                  <h3 className="text-xl font-bold text-gray-800">Otros equipos</h3>
-                </div>
-                <ul className="space-y-2 text-gray-600 text-sm mb-6">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Consolas de videojuegos
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Audio y equipos
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Fuentes de poder
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-600" />
-                    Periféricos
-                  </li>
-                </ul>
-                <a href={getWhatsAppUrl('otro equipo')} target="_blank" rel="noopener noreferrer" className="block">
-                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold">
-                    Consultar por WhatsApp
-                  </Button>
-                </a>
-              </div>
-            </Card>
+            {services.map((service) => {
+              const Icon = service.icon
+              return (
+                <Card 
+                  key={service.id} 
+                  className={`relative bg-cover bg-center backdrop-blur-sm border border-gray-200 shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition-shadow cursor-pointer`}
+                  style={{ backgroundImage: `url(${service.image})` }}
+                  onClick={() => setSelectedService(service.id)}
+                >
+                  {/* overlay for readability */}
+                  <div className="absolute inset-0 bg-black/30" />
+                  <div className="p-6 relative z-10 text-white">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Icon className={`w-10 h-10 ${service.iconColor}`} />
+                      <h3 className="text-xl font-bold">{service.title}</h3>
+                    </div>
+                    <ul className="space-y-2 text-white/90 text-sm mb-6">
+                      {service.features.map((feature, index) => (
+                        <li key={index} className="flex items-center gap-2">
+                          <CheckCircle size={16} className="text-green-200" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="flex flex-col gap-2">
+                      <Button 
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold"
+                        onPress={() => setSelectedService(service.id)}
+                      >
+                        Ver detalles
+                      </Button>
+                      <a href={getWhatsAppUrl(service.title)} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold" onPress={(e:any) => e?.stopPropagation()}>
+                          Consultar por WhatsApp
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
+                </Card>
+              )
+            })}
           </div>
         </div>
       </section>
+
+      {/* Modal flotante personalizado */}
+      {selectedServiceData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" aria-modal="true" role="dialog">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/40" onClick={() => setSelectedService(null)} />
+
+          {/* Dialog */}
+          <div className="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 m-4 z-10 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-4">
+              {selectedServiceData.icon && (
+                <selectedServiceData.icon className={`w-8 h-8 ${selectedServiceData.iconColor}`} />
+              )}
+              <h2 className="text-2xl font-bold text-gray-800">Servicio de {selectedServiceData.title}</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-2">Descripción del servicio</h3>
+                <p className="text-gray-600">{selectedServiceData.detailedInfo.description}</p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-3">Nuestro proceso</h3>
+                <ol className="space-y-2">
+                  {selectedServiceData.detailedInfo.process.map((step, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="flex-shrink-0 w-6 h-6 bg-blue-700 text-white rounded-full flex items-center justify-center text-xs font-bold">{index + 1}</span>
+                      <span className="text-gray-600">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-3">Servicios relacionados</h3>
+                <ul className="space-y-2">
+                  {selectedServiceData.detailedInfo.additionalServices.map((additional, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <CheckCircle size={16} className="text-green-600" />
+                      <span className="text-gray-600">{additional}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-xl">
+                <div className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-blue-700" />
+                  <span className="font-semibold text-gray-800">Garantía</span>
+                </div>
+                <p className="text-gray-600 mt-1">{selectedServiceData.detailedInfo.guarantee}</p>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4">
+              <Button variant="outline" onPress={() => setSelectedService(null)} className="rounded-xl">Cerrar</Button>
+              <a href={getWhatsAppUrl(selectedServiceData.title)} target="_blank" rel="noopener noreferrer">
+                <Button className="bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold" onPress={() => setSelectedService(null)}>Consultar por WhatsApp</Button>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ¿Por qué UltraTecno? */}
       <section className="py-16 px-4 bg-gradient-to-br from-slate-50 to-blue-50">

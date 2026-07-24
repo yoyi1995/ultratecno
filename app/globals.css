@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* ⚠️ ESTA LÍNEA ES LA CLAVE PARA TAILWIND v4: Le dice dónde buscar los estilos del Dropdown */
+@source "../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -23,4 +26,14 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Helper class for hero background image */
+.hero-bg {
+  /* Usando imagen local colocada en public/images/: /images/localul.jpeg */
+  background-image: url('/images/localul.jpeg');
+  /* Mostrar la imagen ocupando todo el ancho (cover) y centrarla */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

@@ -80,6 +80,11 @@ export default function EditProduct() {
         body: formData,
       })
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }))
+        throw new Error(errorData.error || `HTTP ${response.status}`)
+      }
+
       const data = await response.json()
       
       if (data.url) {
