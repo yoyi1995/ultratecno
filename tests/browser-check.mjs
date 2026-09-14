@@ -1,0 +1,128 @@
+import { browser, sleep } from './browser-cdp.mjs';
+const b = await browser();
+const { go, wait, evaluate: ev, check, click, fill, call, shot } = b;
+const testid = id => `[data-testid="${id}"]`;
+const selector = id => JSON.stringify(testid(id));
+const count = id => ev(`document.querySelectorAll(${selector(id)}).length`);
+const text = () => ev('document.body.innerText');
+async function dismiss() {
+  await click('[data-slot="modal-close-trigger"]');
+  await wait('!document.querySelector("[role=dialog]")');
+}
+async function publicCheck() {
+  check('No administrative link on public page', await ev('![...document.querySelectorAll("a")].some(a => new URL(a.href).pathname.startsWith("/admin"))'));
+  check('No horizontal overflow', await ev('document.documentElement.scrollWidth <= innerWidth'), await ev('({width:innerWidth,scroll:document.documentElement.scrollWidth})'));
+}
+try {
+  await go('/');
+  await wait(`document.querySelectorAll(${selector('product-card')}).length > 0`);
+  const home = await text();
+  for (const section of ['Productos', 'Servicios', 'Cursos', 'Consejos', 'Conoce UltraTecno']) check(`Home section ${section}`, home.toLowerCase().includes(section.toLowerCase()));
+  check('Category cards use related images', await ev('[...document.querySelectorAll(".category-tile")].length === 7 && [...document.querySelectorAll(".category-tile")].every(card => card.querySelector("img.category-image"))'));
+  await publicCheck();
+  check('Real establishment image used', await ev('!!document.querySelector("img[src*=local-ultratecno]")'));
+  await shot('home-desktop');
+  await go('/products?q=laptop');
+  await wait(`document.querySelectorAll(${selector('product-card')}).length > 0`);
+  check('Search filters laptop products', await ev(`[...document.querySelectorAll(${selector('product-card')})].every(e=>e.innerText.toLowerCase().includes('laptop'))`));
+  await go('/products?q=qa-no-product-928341');
+  await sleep(500);
+  check('Unknown search has no products', await count('product-card') === 0);
+  await go('/products');
+  await wait(`document.querySelectorAll(${selector('product-card')}).length > 0`);
+  await publicCheck();
+  await click(`${testid('product-card')} .detail-button`);
+  await wait('!!document.querySelector("[role=dialog]")');
+  check('Product modal overlays the viewport', await ev('getComputedStyle(document.querySelector("[data-slot=modal-backdrop]")).position === "fixed"'));
+  check('Product modal shows specifications', await ev('!!document.querySelector("[role=dialog] dl")'));
+  await dismiss();
+  await click(testid('add-to-cart'));
+  await go('/cart');
+  await wait(`!!document.querySelector(${selector('cart-total')})`);
+  const initialTotal = await ev(`document.querySelector(${selector('cart-total')}).innerText`);
+  check('Cart initial total positive', Number(initialTotal.replace(/[^0-9.]/g, '')) > 0, initialTotal);
+  await go('/cart');
+  await wait(`!!document.querySelector(${selector('cart-total')})`);
+  check('Cart persists full reload', await ev(`document.querySelector(${selector('cart-total')}).innerText`) === initialTotal);
+  const whatsapp = await ev('[...document.querySelectorAll(\'a[href*="wa.me"]\')].map(a=>a.href).find(url=>decodeURIComponent(url).includes("Total"))');
+  check('Cart WhatsApp number and encoded total', Boolean(whatsapp && new URL(whatsapp).pathname === '/593987808181' && new URL(whatsapp).searchParams.get('text').includes(initialTotal)), whatsapp);
+  await shot('cart-desktop');
+  await go('/reparaciones');
+  await wait(`document.querySelectorAll(${selector('service-card')}).length > 0`);
+  check('Services contain category imagery', await ev(`[...document.querySelectorAll(${selector('service-card')})].every(e=>e.querySelector('img'))`));
+  await click(`${testid('service-card')} button`);
+  await wait('!!document.querySelector("[role=dialog]")');
+  check('Service detail includes recommendations', (await text()).toLowerCase().includes('recomendaciones'));
+  check('Service WhatsApp CTA', await ev('!!document.querySelector(\'[role=dialog] a[href*="593987808181"]\')'));
+  await shot('service-modal');
+  await dismiss();
+  await go('/courses');
+  await wait(`document.querySelectorAll(${selector('course-card')}).length > 0`);
+  check('Undated courses show Próximamente', (await text()).includes('Próximamente'));
+  check('Courses have no add-to-cart action', await count('add-to-cart') === 0);
+  await click(`${testid('course-card')} button`); await wait('!!document.querySelector("[role=dialog]")');
+  check('Course details include syllabus and WhatsApp', (await text()).includes('Temario') && await ev('!!document.querySelector(\'[role=dialog] a[href*="593987808181"]\')'));
+  await dismiss();
+  await go('/consejos');
+  await wait(`document.querySelectorAll(${selector('tip-card')}).length > 0`);
+  check('Tips displayed', await count('tip-card') > 0);
+  await click(`${testid('tip-card')} button`); await wait('!!document.querySelector("[role=dialog]")');
+  check('Article detail contains substantive content', await ev('document.querySelector("[role=dialog]").innerText.length > 100'));
+  await dismiss();
+  await publicCheck();
+  await call('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await go('/'); await wait(`document.querySelectorAll(${selector('product-card')}).length > 0`); await publicCheck(); await shot('home-mobile');
+  await go('/products'); await wait(`document.querySelectorAll(${selector('product-card')}).length > 0`); await publicCheck(); await shot('products-mobile');
+  await go('/cart'); await wait(`!!document.querySelector(${selector('cart-total')})`); await publicCheck(); await shot('cart-mobile');
+  await call('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+  await go('/admin'); await wait(`!!document.querySelector(${selector('admin-login')})`);
+  await fill(testid('admin-email'), process.env.QA_ADMIN_EMAIL || 'demo@ultratecno.local');
+  await fill(testid('admin-password'), 'incorrect-qa-password'); await click(testid('admin-submit'));
+  await wait('!!document.querySelector("[role=alert]")');
+  check('Incorrect login stays protected', await count('admin-login') === 1);
+  await fill(testid('admin-password'), process.env.QA_ADMIN_PASSWORD || 'UltraTecnoDemo2026!'); await click(testid('admin-submit'));
+  await wait(`!!document.querySelector(${selector('admin-nav-products')})`);
+  check('Correct administrator login', await count('admin-login') === 0);
+  for (const collection of ['products', 'categories', 'services', 'courses', 'tips']) {
+    await click(testid(`admin-nav-${collection}`)); await wait(`!!document.querySelector(${selector('admin-create')})`);
+    check(`Admin ${collection} collection usable`, await count('admin-create') === 1);
+    if (collection === 'categories' || collection === 'services') {
+      await click(testid('admin-create')); await wait(`!!document.querySelector(${selector('admin-editor')})`);
+      if (collection === 'categories') check('Category image is administrable', await ev('!!document.querySelector("#field-image_url") && !!document.querySelector("#admin-upload")'));
+      if (collection === 'services') check('Service featured is administrable', await ev('!!document.querySelector("button[name=featured]")'));
+      await ev('[...document.querySelectorAll("button")].find(button => button.innerText.includes("Volver al listado")).click()');
+      await wait(`!document.querySelector(${selector('admin-editor')})`);
+    }
+  }
+  await click(testid('admin-nav-products')); await wait(`!!document.querySelector(${selector('admin-create')})`);
+  const fixture = `QA producto ${Date.now()}`;
+  await click(testid('admin-create')); await wait(`!!document.querySelector(${selector('admin-editor')})`);
+  await fill('#field-name', fixture); await fill('#field-description', 'Producto temporal de comprobación QA.');
+  await fill('#field-price', '12.35'); await fill('#field-brand', 'QA');
+  await click('#field-category');
+  await wait('!!document.querySelector("[role=option]")'); await click('[role="option"]');
+  await click(testid('admin-save'));
+  await wait(`!document.querySelector(${selector('admin-editor')}) && document.body.innerText.includes(${JSON.stringify(fixture)})`);
+  check('Product created through admin UI', (await text()).includes(fixture));
+  const fixtureRow = `[...document.querySelectorAll(${selector('admin-row')})].find(e=>e.innerText.includes(${JSON.stringify(fixture)}))`;
+  await ev(`${fixtureRow}.querySelector(${selector('admin-edit')}).click()`);
+  await wait(`!!document.querySelector(${selector('admin-editor')})`);
+  await fill('#field-price', '18.95'); await click('button[name="active"]'); await click(testid('admin-save'));
+  await wait(`!document.querySelector(${selector('admin-editor')})`);
+  check('Product updated and deactivated through UI', await ev(`${fixtureRow}.innerText.includes('18.95') && ${fixtureRow}.innerText.includes('Inactivo')`));
+  const publicFixture = await ev(`fetch('/api/content/products').then(r=>r.json()).then(b=>b.data.some(p=>p.name===${JSON.stringify(fixture)}))`);
+  check('Inactive product absent from public API', !publicFixture);
+  await go('/admin/products'); await wait(`document.body.innerText.includes(${JSON.stringify(fixture)})`);
+  check('Admin edit persists reload', await ev(`${fixtureRow}.innerText.includes('18.95')`));
+  await ev(`${fixtureRow}.querySelector(${selector('admin-delete')}).click()`);
+  await wait(`!!document.querySelector(${selector('admin-confirm-delete')})`);
+  await click(testid('admin-confirm-delete'));
+  await wait(`!document.body.innerText.includes(${JSON.stringify(fixture)})`);
+  check('Product deleted through confirmation UI', !(await text()).includes(fixture));
+  await shot('admin-desktop');
+  const unexpected = b.errors.filter(error => !error.console?.includes('401 (Unauthorized)'));
+  check('No unexpected JavaScript runtime errors', unexpected.length === 0, unexpected);
+  b.report(); console.log(JSON.stringify({ passed: b.checks.length }, null, 2));
+} catch (error) {
+  await shot('failure').catch(() => {}); b.report(error); console.error(error); process.exitCode = 1;
+} finally { b.stop(); }
