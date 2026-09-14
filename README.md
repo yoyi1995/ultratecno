@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# UltraTecno
 
-## Getting Started
+Sitio comercial y administrador de contenido para UltraTecno: catálogo, carrito con consulta por WhatsApp, servicios técnicos, cursos, consejos y CRUD privado.
 
-First, run the development server:
+## Requisitos e instalación
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 20.9 o superior.
+- npm incluido con Node.js.
+
+```powershell
+npm ci --ignore-scripts
+Copy-Item .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Sin credenciales Supabase, `next dev` usa el catálogo demo local. No expongas el modo demo a Internet.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Desarrollo local
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```powershell
+npm run dev -- --hostname 127.0.0.1 --port 3000
+```
 
-## Learn More
+Abre <http://127.0.0.1:3000>. El administrador está en <http://127.0.0.1:3000/admin>.
 
-To learn more about Next.js, take a look at the following resources:
+Acceso demo predeterminado:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Correo: `demo@ultratecno.local`
+- Contraseña: `UltraTecnoDemo2026!`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Los cambios CRUD del demo se guardan en `.local/content.json` y las imágenes en `.local/media/`. Para detener el servidor, presiona `Ctrl+C` en su terminal.
 
-## Deploy on Vercel
+## Build de producción local
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```powershell
+npm run build
+$env:DEMO_MODE='true'
+npm run start -- --hostname 127.0.0.1 --port 3000
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`DEMO_MODE=true` solo habilita el administrador demo de `next start` en localhost. En Netlify, Vercel o cualquier entorno público el administrador requiere Supabase y el modo demo queda deshabilitado.
+
+## Verificación
+
+Con el servidor activo en el puerto 3000:
+
+```powershell
+npm run lint
+node tests/qa-permissions.mjs
+node tests/browser-check.mjs
+```
+
+La prueba de navegador usa Chrome por defecto. Puedes indicar otro Chromium instalado con `QA_CHROME`. Las capturas y resultados JSON se guardan en `project-state/ultratecno/qa/` cuando se ejecuta desde esta fábrica.
+
+## Supabase, Cloudinary y despliegue
+
+Copia las variables públicas del proyecto existente a `.env.local` y deja `DEMO_MODE=false`. Nunca uses una clave `service_role` ni publiques secretos. La migración aditiva, las políticas RLS, Cloudinary y los pasos para el mismo sitio Netlify están documentados en [docs/data-setup.md](docs/data-setup.md).
+
+Cloudinary sigue siendo el proveedor de imágenes. `CLOUDINARY_API_SECRET` y `CLOUDINARY_API_KEY` se consumen únicamente en servidor; el código acepta temporalmente el nombre histórico `NEXT_PUBLIC_CLOUDINARY_API_KEY` para no romper la beta mientras se actualiza el entorno.
