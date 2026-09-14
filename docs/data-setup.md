@@ -20,6 +20,9 @@ No se pudieron listar `auth.users`, `pg_policies`, triggers ni funciones con la 
 3. La migración crea las siete categorías públicas requeridas sin sobrescribir slugs existentes. Las referencias históricas `repuestos` y `tintas` se preservan como categorías inactivas para no añadir tarjetas al Home ni dejar productos huérfanos.
 4. No crea bucket ni políticas de Supabase Storage. Todas las imágenes administrativas siguen pasando por Cloudinary.
 5. No añadas una FK entre `products.category` y `categories.slug` hasta revisar y alinear todas las referencias históricas. La API ya impide seleccionar una categoría inexistente o eliminar/cambiar un slug en uso.
+6. Para publicar el catálogo base de las dos páginas de servicio, despliega primero la versión que separa `category=mantenimiento` de `category=reparacion` y aplica después `supabase/migrations/20260914_service_catalogs.sql`. Esta segunda migración solo inserta filas faltantes por combinación de categoría y título; no sobrescribe ni elimina contenido existente.
+
+Mientras esa semilla no esté aplicada, las páginas públicas muestran el mismo catálogo base incluido en la aplicación cuando su categoría todavía no tiene filas remotas. En cuanto exista contenido activo de esa categoría en `services`, Supabase pasa a ser la fuente visible y `/admin/services` permite editarlo normalmente.
 
 ## Administrador y RLS
 
