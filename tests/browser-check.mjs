@@ -48,14 +48,43 @@ try {
   check('Cart WhatsApp number and encoded total', Boolean(whatsapp && new URL(whatsapp).pathname === '/593987808181' && new URL(whatsapp).searchParams.get('text').includes(initialTotal)), whatsapp);
   await shot('cart-desktop');
   await go('/reparaciones');
-  await wait(`document.querySelectorAll(${selector('service-card')}).length > 0`);
-  check('Services contain category imagery', await ev(`[...document.querySelectorAll(${selector('service-card')})].every(e=>e.querySelector('img'))`));
-  await click(`${testid('service-card')} button`);
+  await wait(`document.querySelectorAll(${selector('service-card')}).length === 6`);
+  check('Repair page separates six diagnostic cards', await ev(`[...document.querySelectorAll(${selector('service-card')})].every(e=>e.dataset.serviceKind==='reparacion' && e.querySelector('img') && e.querySelectorAll('.service-preview li').length >= 4)`));
+  check('Repair desktop grid has three columns', await ev('getComputedStyle(document.querySelector("[data-testid=reparacion-grid]")).gridTemplateColumns.split(" ").length === 3'));
+  check('Repair hero and diagnostic copy are explicit', (await text()).includes('¿Tu equipo presenta una falla?') && (await text()).includes('El origen exacto'));
+  const repairWhatsApp = await ev('[...document.querySelectorAll("[data-service-kind=reparacion] a[href*=\\"wa.me\\"]")].map(a=>decodeURIComponent(a.href)).find(url=>url.includes("diagnóstico técnico"))');
+  check('Repair card has diagnostic WhatsApp CTA', Boolean(repairWhatsApp));
+  await click(`${testid('service-card')} .detail-button`);
   await wait('!!document.querySelector("[role=dialog]")');
-  check('Service detail includes recommendations', (await text()).toLowerCase().includes('recomendaciones'));
-  check('Service WhatsApp CTA', await ev('!!document.querySelector(\'[role=dialog] a[href*="593987808181"]\')'));
-  await shot('service-modal');
+  const repairModalText=await text();
+  check('Repair modal explains failures without diagnosing', ['Fallas frecuentes','Síntomas frecuentes','Posibles áreas a revisar','El origen exacto de una falla se determina mediante diagnóstico técnico.'].every(value=>repairModalText.includes(value)), repairModalText);
+  check('Repair modal uses official WhatsApp', await ev('!!document.querySelector(\'[role=dialog] a[href*="593987808181"]\')'));
+  await shot('repair-modal');
   await dismiss();
+  await go('/mantenimiento');
+  await wait(`document.querySelectorAll(${selector('service-card')}).length === 6`);
+  check('Maintenance page separates six preventive cards', await ev(`[...document.querySelectorAll(${selector('service-card')})].every(e=>e.dataset.serviceKind==='mantenimiento' && e.querySelector('img') && e.querySelector('.service-preview li'))`));
+  check('Maintenance desktop grid has three columns', await ev('getComputedStyle(document.querySelector("[data-testid=mantenimiento-grid]")).gridTemplateColumns.split(" ").length === 3'));
+  const maintenanceText=await text();
+  check('Maintenance keeps hero and adds requested introduction', maintenanceText.includes('CUIDA LO QUE TE MUEVE') && maintenanceText.includes('Mantenimiento preventivo para tus equipos') && maintenanceText.includes('ayudar a prevenir'));
+  check('Maintenance cards have both actions', await ev(`[...document.querySelectorAll(${selector('service-card')})].every(e=>e.querySelector('.detail-button') && e.querySelector('.service-whatsapp'))`));
+  await click(`${testid('service-card')} .detail-button`); await wait('!!document.querySelector("[role=dialog]")');
+  const maintenanceModalText=await text();
+  check('Maintenance modal has preventive sections', ['Qué incluye','Problemas que ayuda a prevenir','Recomendaciones'].every(value=>maintenanceModalText.includes(value)), maintenanceModalText);
+  const maintenanceWhatsApp=await ev('decodeURIComponent(document.querySelector(\'[role=dialog] a[href*="593987808181"]\').href)');
+  check('Maintenance WhatsApp adapts equipment', maintenanceWhatsApp.includes('mantenimiento preventivo') && maintenanceWhatsApp.includes('Laptop'));
+  await shot('maintenance-modal'); await dismiss();
+  await call('Emulation.setDeviceMetricsOverride', { width: 800, height: 1000, deviceScaleFactor: 1, mobile: false });
+  await go('/mantenimiento'); await wait(`document.querySelectorAll(${selector('service-card')}).length === 6`);
+  check('Maintenance tablet grid has two columns', await ev('getComputedStyle(document.querySelector("[data-testid=mantenimiento-grid]")).gridTemplateColumns.split(" ").length === 2')); await publicCheck(); await shot('maintenance-tablet');
+  await go('/reparaciones'); await wait(`document.querySelectorAll(${selector('service-card')}).length === 6`);
+  check('Repair tablet grid has two columns', await ev('getComputedStyle(document.querySelector("[data-testid=reparacion-grid]")).gridTemplateColumns.split(" ").length === 2')); await publicCheck(); await shot('repair-tablet');
+  await call('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await go('/mantenimiento'); await wait(`document.querySelectorAll(${selector('service-card')}).length === 6`);
+  check('Maintenance mobile grid has one column', await ev('getComputedStyle(document.querySelector("[data-testid=mantenimiento-grid]")).gridTemplateColumns.split(" ").length === 1')); await publicCheck(); await shot('maintenance-mobile');
+  await go('/reparaciones'); await wait(`document.querySelectorAll(${selector('service-card')}).length === 6`);
+  check('Repair mobile grid has one column', await ev('getComputedStyle(document.querySelector("[data-testid=reparacion-grid]")).gridTemplateColumns.split(" ").length === 1')); await publicCheck(); await shot('repair-mobile');
+  await call('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
   await go('/courses');
   await wait(`document.querySelectorAll(${selector('course-card')}).length > 0`);
   check('Undated courses show Próximamente', (await text()).includes('Próximamente'));
@@ -89,7 +118,12 @@ try {
     if (collection === 'categories' || collection === 'services') {
       await click(testid('admin-create')); await wait(`!!document.querySelector(${selector('admin-editor')})`);
       if (collection === 'categories') check('Category image is administrable', await ev('!!document.querySelector("#field-image_url") && !!document.querySelector("#admin-upload")'));
-      if (collection === 'services') check('Service featured is administrable', await ev('!!document.querySelector("button[name=featured]")'));
+      if (collection === 'services') {
+        check('Service image and featured state are administrable', await ev('!!document.querySelector("#field-image_url") && !!document.querySelector("button[name=featured]")'));
+        await click('#field-category'); await wait('document.querySelectorAll("[role=option]").length === 2');
+        check('Admin separates maintenance and repair types', await ev('[...document.querySelectorAll("[role=option]")].map(option=>option.innerText).join(" ").includes("Mantenimiento preventivo") && [...document.querySelectorAll("[role=option]")].map(option=>option.innerText).join(" ").includes("Reparación / diagnóstico")'));
+        await click('[role=option]');
+      }
       await ev('[...document.querySelectorAll("button")].find(button => button.innerText.includes("Volver al listado")).click()');
       await wait(`!document.querySelector(${selector('admin-editor')})`);
     }

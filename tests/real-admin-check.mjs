@@ -164,7 +164,7 @@ try {
   const payloads = {
     categories: { name: `${marker}_Category`, slug, sort_order: 999999, image_url: uploadedUrl, active: true },
     products: { name: `${marker}_Product`, description: 'Registro temporal QA', price: 1.23, category: slug, brand: 'QA_TEST', image_url: uploadedUrl, images: [uploadedUrl], specifications: { QA: 'TEST' }, in_stock: true, featured: false, active: true },
-    services: { title: `${marker}_Service`, category: 'QA_TEST', image_url: uploadedUrl, description: 'Registro temporal QA', includes: ['QA_TEST'], problems: ['QA_TEST'], recommendations: ['QA_TEST'], featured: false, active: true },
+    services: { title: `${marker}_Service`, category: 'reparacion', image_url: uploadedUrl, description: 'Registro temporal QA', includes: ['QA_TEST'], problems: ['QA_TEST'], recommendations: ['QA_TEST'], featured: false, active: true },
     courses: { title: `${marker}_Course`, image_url: uploadedUrl, description: 'Registro temporal QA', syllabus: ['QA_TEST'], level: 'QA_TEST', modality: 'QA_TEST', duration: '1 hora', start_date: null, schedule: 'QA_TEST', seats: 1, status: 'upcoming', featured: false, active: true },
     tips: { title: `${marker}_Tip`, description: 'Registro temporal QA', content: 'Contenido temporal QA_TEST', kind: 'article', url: '', image_url: uploadedUrl, category: 'QA_TEST', active: true },
   };
