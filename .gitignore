@@ -42,3 +42,8 @@ next-env.d.ts
 branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
+
+# Local demo and verification artifacts
+.local/
+.evidence/
+!.env.example

@@ -1,132 +1,17 @@
-'use client'
-
-import React, { createContext, useContext, useState, useEffect } from 'react'
-
-// Interfaz para los items del carrito
-interface CartItem {
-  id: string | number
-  name: string
-  price: number
-  quantity: number
-  image_url?: string | null
-  category?: string
-}
-
-// Interfaz para el contexto del carrito
-interface CartContextType {
-  items: CartItem[]
-  addItem: (product: Omit<CartItem, 'quantity'>) => void
-  removeItem: (id: string | number) => void
-  updateQuantity: (id: string | number, quantity: number) => void
-  clearCart: () => void
-  total: number
-  itemCount: number
-}
-
-// Creamos el contexto del carrito
-const CartContext = createContext<CartContextType | undefined>(undefined)
-
-// Hook personalizado para usar el carrito en cualquier componente
-export function useCart() {
-  const context = useContext(CartContext)
-  if (!context) {
-    throw new Error('useCart debe ser usado dentro de CartProvider')
-  }
-  return context
-}
-
-// Proveedor del carrito - envuelve la aplicación para manejar el estado global
-export function CartProvider({ children }: { children: React.ReactNode }) {
-  // Estado para los items del carrito, inicializado desde localStorage
-  const [items, setItems] = useState<CartItem[]>([])
-
-  // Cargar carrito desde localStorage al iniciar
-  useEffect(() => {
-    const savedCart = localStorage.getItem('cart')
-    if (savedCart) {
-      try {
-        setItems(JSON.parse(savedCart))
-      } catch (e) {
-        console.error('Error parsing cart from localStorage:', e)
-      }
-    }
-  }, [])
-
-  // Guardar carrito en localStorage cuando cambie
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items))
-  }, [items])
-
-  // Agregar un producto al carrito
-  const addItem = (product: Omit<CartItem, 'quantity'>) => {
-    setItems(prevItems => {
-      // Verificar si el producto ya existe en el carrito
-      const existingItem = prevItems.find(item => item.id === product.id)
-      
-      if (existingItem) {
-        // Si existe, incrementar la cantidad
-        return prevItems.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      }
-      
-      // Si no existe, agregarlo con cantidad 1
-      return [...prevItems, { ...product, quantity: 1 }]
-    })
-  }
-
-  // Eliminar un producto del carrito
-  const removeItem = (id: string | number) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== id))
-  }
-
-  // Actualizar la cantidad de un producto
-  const updateQuantity = (id: string | number, quantity: number) => {
-    if (quantity <= 0) {
-      removeItem(id)
-      return
-    }
-    
-    setItems(prevItems =>
-      prevItems.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    )
-  }
-
-  // Limpiar el carrito completamente
-  const clearCart = () => {
-    setItems([])
-  }
-
-  // Calcular el total de la compra (suma de precio * cantidad)
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  )
-
-  // Contar el total de items (suma de cantidades)
-  const itemCount = items.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  )
-
-  // Valor del contexto que se comparte
-  const value = {
-    items,
-    addItem,
-    removeItem,
-    updateQuantity,
-    clearCart,
-    total,
-    itemCount
-  }
-
-  return (
-    <CartContext.Provider value={value}>
-      {children}
-    </CartContext.Provider>
-  )
+﻿'use client'
+import { createContext, useContext, useState, useEffect } from 'react'
+export interface CartItem {id:string|number;name:string;price:number;quantity:number;image_url?:string|null;category?:string}
+interface CartContextType {items:CartItem[];addItem:(p:Omit<CartItem,'quantity'>)=>void;removeItem:(id:string|number)=>void;updateQuantity:(id:string|number,q:number)=>void;clearCart:()=>void;total:number;itemCount:number}
+const CartContext=createContext<CartContextType|undefined>(undefined)
+export function useCart(){const c=useContext(CartContext);if(!c)throw new Error('useCart debe usarse dentro de CartProvider');return c}
+function validItem(value:unknown):value is CartItem{if(!value||typeof value!=='object')return false;const v=value as Partial<CartItem>;return (typeof v.id==='string'||typeof v.id==='number')&&typeof v.name==='string'&&typeof v.price==='number'&&Number.isFinite(v.price)&&v.price>=0&&typeof v.quantity==='number'&&Number.isInteger(v.quantity)&&v.quantity>0&&v.quantity<=99}
+export function CartProvider({children}:{children:React.ReactNode}){
+ const [items,setItems]=useState<CartItem[]>([]);const [ready,setReady]=useState(false)
+ useEffect(()=>{const timer=window.setTimeout(()=>{try{const saved=JSON.parse(localStorage.getItem('cart')||'[]');if(Array.isArray(saved)){const seen=new Set<string>();setItems(saved.filter(validItem).filter(i=>{const key=String(i.id);if(seen.has(key))return false;seen.add(key);return true}))}}catch{localStorage.removeItem('cart')}finally{setReady(true)}},0);return()=>window.clearTimeout(timer)},[])
+ useEffect(()=>{if(ready){try{localStorage.setItem('cart',JSON.stringify(items))}catch{/* Cart stays usable when browser storage is unavailable. */}}},[items,ready])
+ const removeItem=(id:string|number)=>setItems(old=>old.filter(i=>String(i.id)!==String(id)))
+ const addItem=(p:Omit<CartItem,'quantity'>)=>{if(!Number.isFinite(p.price)||p.price<0)return;setItems(old=>old.some(i=>String(i.id)===String(p.id))?old.map(i=>String(i.id)===String(p.id)?{...i,quantity:Math.min(99,i.quantity+1)}:i):[...old,{...p,quantity:1}])}
+ const updateQuantity=(id:string|number,q:number)=>{if(!Number.isFinite(q))return;if(q<=0){removeItem(id);return}setItems(old=>old.map(i=>String(i.id)===String(id)?{...i,quantity:Math.min(99,Math.max(1,Math.floor(q)))}:i))}
+ const total=items.reduce((sum,i)=>sum+Math.round(i.price*100)*i.quantity,0)/100
+ return <CartContext.Provider value={{items,addItem,removeItem,updateQuantity,clearCart:()=>setItems([]),total,itemCount:items.reduce((sum,i)=>sum+i.quantity,0)}}>{children}</CartContext.Provider>
 }

@@ -35,8 +35,10 @@ export default function AnimatedText() {
           setDisplayedText(word.slice(0, displayedText.length - 1))
         }, 40)
       } else {
-        setIsDeleting(false)
-        setCurrentWord((prev) => (prev + 1) % words.length)
+        timeout = setTimeout(() => {
+          setIsDeleting(false)
+          setCurrentWord((prev) => (prev + 1) % words.length)
+        }, 0)
       }
     }
 
