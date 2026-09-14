@@ -17,6 +17,7 @@ export function validate(collection:Collection,body:Record<string,unknown>){
  }
  if(collection==='products'&&Math.abs(Number(output.price)*100-Math.round(Number(output.price)*100))>0.000001)throw new ValidationError('Precio: máximo dos decimales');
  if(collection==='categories'&&!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(String(output.slug)))throw new ValidationError('Slug inválido');
+ if(collection==='services'&&!['mantenimiento','reparacion'].includes(String(output.category)))throw new ValidationError('Selecciona mantenimiento preventivo o reparación / diagnóstico');
  if(collection==='courses'&&!['upcoming','open','closed'].includes(String(output.status)))throw new ValidationError('Estado inválido');
  if(collection==='tips'&&!['article','youtube','video'].includes(String(output.kind)))throw new ValidationError('Tipo inválido');
  if(collection==='tips'&&output.kind!=='article'&&!output.url)throw new ValidationError('El video requiere una URL');

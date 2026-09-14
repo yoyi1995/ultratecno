@@ -12,7 +12,7 @@ export const useAdminSession = () => useContext(SessionContext);
 export const adminSections = [
   { key: 'products', label: 'Productos', icon: Package, description: 'Catálogo, imágenes y disponibilidad' },
   { key: 'categories', label: 'Categorías', icon: Shapes, description: 'Organización y orden de la tienda' },
-  { key: 'services', label: 'Servicios', icon: Wrench, description: 'Servicios técnicos y recomendaciones' },
+  { key: 'services', label: 'Servicios', icon: Wrench, description: 'Mantenimientos, reparaciones e imágenes' },
   { key: 'courses', label: 'Cursos', icon: GraduationCap, description: 'Temarios, fechas y capacitaciones' },
   { key: 'tips', label: 'Videos / tips', icon: PlaySquare, description: 'Artículos y contenido audiovisual' },
 ] as const;

@@ -19,6 +19,15 @@ export function serviceMessage(serviceTitle: string): string {
   return `¡Hola, UltraTecno! Quiero solicitar el servicio técnico: ${serviceTitle}.\nMi equipo y la falla que presenta son: `;
 }
 
+export function maintenanceMessage(equipment: string): string {
+  return `Hola UltraTecno. Me interesa solicitar mantenimiento preventivo para ${equipment}. Quisiera información sobre el servicio.`;
+}
+
+export function repairMessage(equipment: string, issue?: string): string {
+  const problem = issue ? ` que ${issue.toLocaleLowerCase('es')}` : ' que presenta problemas';
+  return `Hola UltraTecno. Tengo ${equipment}${problem} y quisiera solicitar un diagnóstico técnico.`;
+}
+
 export function courseMessage(courseTitle: string): string {
   return `¡Hola, UltraTecno! Quisiera consultar información y disponibilidad para el curso: ${courseTitle}.`;
 }

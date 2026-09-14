@@ -5,6 +5,7 @@ import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { NextRequest, NextResponse } from 'next/server';
 import { demoData, type Database } from './demo-data';
+import { serviceContent } from './service-content';
 import type { Collection } from './types';
 
 const globalState = globalThis as typeof globalThis & { ultraKey?:Buffer; ultraQueue?:Promise<unknown>; ultraAttempts?:Map<string,{count:number;until:number}> };
@@ -34,7 +35,7 @@ export function setSession(response:NextResponse,token:string,maxAge:number,requ
 export function rateLimit(request:NextRequest){const attempts=globalState.ultraAttempts??=new Map();const id=request.headers.get('x-forwarded-for')?.split(',')[0]||'local';const now=Date.now();for(const [k,v] of attempts)if(v.until<now)attempts.delete(k);const value=attempts.get(id)||{count:0,until:now+60000};if(value.count>=10)throw new ApiError(429,'Demasiados intentos. Espera un minuto.');value.count++;attempts.set(id,value);}
 export function failure(error:unknown){ if(error instanceof ApiError)return NextResponse.json({error:error.message},{status:error.status}); console.error('UltraTecno API failure:',error instanceof Error?error.name:'unknown');return NextResponse.json({error:'No se pudo completar la operación. Revisa la configuración del servidor.'},{status:500}); }
 export async function jsonBody(request:NextRequest){if(Number(request.headers.get('content-length')||0)>128000)throw new ApiError(413,'Contenido demasiado grande');const text=await request.text();if(text.length>128000)throw new ApiError(413,'Contenido demasiado grande');try{const value=JSON.parse(text);if(!value||typeof value!=='object'||Array.isArray(value))throw new Error();return value as Record<string,unknown>;}catch{throw new ApiError(400,'JSON inválido');}}
-function normalizeDemo(database:Database):Database{const categoryImages=new Map(demoData.categories.map(row=>[row.slug,row.image_url]));return {...database,categories:database.categories.map(row=>({...row,image_url:row.image_url||categoryImages.get(row.slug)||''})),services:database.services.map(row=>({...row,featured:row.featured??false}))};}
+function normalizeDemo(database:Database):Database{const categoryImages=new Map(demoData.categories.map(row=>[row.slug,row.image_url]));const modernServices=database.services.some(row=>row.category==='reparacion');return {...database,categories:database.categories.map(row=>({...row,image_url:row.image_url||categoryImages.get(row.slug)||''})),services:(modernServices?database.services:structuredClone(serviceContent)).map(row=>({...row,featured:row.featured??false}))};}
 export async function readDemo():Promise<Database>{try{return normalizeDemo(JSON.parse(await readFile(databasePath,'utf8')));}catch(error){if((error as NodeJS.ErrnoException).code==='ENOENT')return structuredClone(demoData);throw error;}}
 export async function mutateDemo(collection:Collection,method:string,record:Record<string,unknown>){
  const run=async()=>{const db=await readDemo();const rows=db[collection] as unknown as Record<string,unknown>[];let result:Record<string,unknown>|null=null;
