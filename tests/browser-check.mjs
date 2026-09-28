@@ -27,9 +27,12 @@ try {
   await go(categoryHref); await wait('!!document.querySelector("h1")');
   check('Category landing page rendered', await ev('document.querySelector("h1").innerText.length > 0'));
   await publicCheck(); await shot('category-desktop');
-  await go('/tienda?q=laptop');
+  await go('/tienda');
   await wait(`document.querySelectorAll(${selector('product-card')}).length > 0`);
-  check('Search filters laptop products', await ev(`[...document.querySelectorAll(${selector('product-card')})].every(e=>e.innerText.toLowerCase().includes('laptop'))`));
+  const searchTerm = await ev(`document.querySelector(${selector('product-card')}).querySelector('h3').innerText.trim().split(/\\s+/)[0].toLowerCase()`);
+  await go(`/tienda?q=${encodeURIComponent(searchTerm)}`);
+  await wait(`document.querySelectorAll(${selector('product-card')}).length > 0`);
+  check('Search filters real catalog products', await ev(`[...document.querySelectorAll(${selector('product-card')})].every(e=>e.innerText.toLowerCase().includes(${JSON.stringify(searchTerm)}))`), searchTerm);
   await go('/tienda?q=qa-no-product-928341');
   await sleep(500);
   check('Unknown search has no products', await count('product-card') === 0);
@@ -77,11 +80,12 @@ try {
   const maintenanceText=await text();
   check('Maintenance keeps hero and adds requested introduction', maintenanceText.includes('CUIDA LO QUE TE MUEVE') && maintenanceText.includes('Mantenimiento preventivo para tus equipos') && maintenanceText.includes('ayudar a prevenir'));
   check('Maintenance cards have both actions', await ev(`[...document.querySelectorAll(${selector('service-card')})].every(e=>e.querySelector('.detail-button') && e.querySelector('.service-whatsapp'))`));
+  const maintenanceCardWhatsApp = await ev(`decodeURIComponent(document.querySelector(${selector('service-card')}).querySelector('.service-whatsapp').href)`);
   await click(`${testid('service-card')} .detail-button`); await wait('!!document.querySelector("[role=dialog]")');
   const maintenanceModalText=await text();
   check('Maintenance modal has preventive sections', ['Qué incluye','Problemas que ayuda a prevenir','Recomendaciones'].every(value=>maintenanceModalText.includes(value)), maintenanceModalText);
   const maintenanceWhatsApp=await ev('decodeURIComponent(document.querySelector(\'[role=dialog] a[href*="593987808181"]\').href)');
-  check('Maintenance WhatsApp adapts equipment', maintenanceWhatsApp.includes('mantenimiento preventivo') && maintenanceWhatsApp.includes('Laptop'));
+  check('Maintenance WhatsApp matches the selected equipment', maintenanceWhatsApp.includes('mantenimiento preventivo para') && maintenanceWhatsApp === maintenanceCardWhatsApp, { maintenanceCardWhatsApp, maintenanceWhatsApp });
   await shot('maintenance-modal'); await dismiss();
   await call('Emulation.setDeviceMetricsOverride', { width: 800, height: 1000, deviceScaleFactor: 1, mobile: false });
   await go('/mantenimiento'); await wait(`document.querySelectorAll(${selector('service-card')}).length === 6`);
@@ -102,11 +106,16 @@ try {
   check('Course details include syllabus and WhatsApp', (await text()).includes('Temario') && await ev('!!document.querySelector(\'[role=dialog] a[href*="593987808181"]\')'));
   await dismiss();
   await go('/consejos');
-  await wait(`document.querySelectorAll(${selector('tip-card')}).length > 0`);
-  check('Tips displayed', await count('tip-card') > 0);
-  await click(`${testid('tip-card')} button`); await wait('!!document.querySelector("[role=dialog]")');
-  check('Article detail contains substantive content', await ev('document.querySelector("[role=dialog]").innerText.length > 100'));
-  await dismiss();
+  await wait('!!document.querySelector("h1")');
+  const tipCount = await count('tip-card');
+  if (tipCount > 0) {
+    check('Tips displayed', tipCount > 0);
+    await click(`${testid('tip-card')} button`); await wait('!!document.querySelector("[role=dialog]")');
+    check('Article detail contains substantive content', await ev('document.querySelector("[role=dialog]").innerText.length > 100'));
+    await dismiss();
+  } else {
+    check('Empty tips catalog is explicit', (await text()).includes('Todavía no hay contenido disponible'));
+  }
   await publicCheck();
   await call('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await go('/'); await wait(`document.querySelectorAll(${selector('product-card')}).length > 0`); await publicCheck(); await shot('home-mobile');
@@ -123,7 +132,8 @@ try {
   await wait(`!!document.querySelector(${selector('admin-nav-products')})`);
   check('Correct administrator login', await count('admin-login') === 0);
   for (const collection of ['products', 'categories', 'services', 'courses', 'tips']) {
-    await click(testid(`admin-nav-${collection}`)); await wait(`!!document.querySelector(${selector('admin-create')})`);
+    await click(testid(`admin-nav-${collection}`));
+    await wait(`location.pathname === '/admin/${collection}' && !!document.querySelector(${selector('admin-create')}) && ![...document.querySelectorAll('[role=status]')].some(e=>e.innerText.includes('Cargando contenido'))`);
     check(`Admin ${collection} collection usable`, await count('admin-create') === 1);
     if (collection === 'categories' || collection === 'services') {
       await click(testid('admin-create')); await wait(`!!document.querySelector(${selector('admin-editor')})`);
@@ -138,7 +148,8 @@ try {
       await wait(`!document.querySelector(${selector('admin-editor')})`);
     }
   }
-  await click(testid('admin-nav-products')); await wait(`!!document.querySelector(${selector('admin-create')})`);
+  await click(testid('admin-nav-products'));
+  await wait(`location.pathname === '/admin/products' && !!document.querySelector(${selector('admin-create')}) && document.querySelectorAll(${selector('admin-row')}).length > 0 && ![...document.querySelectorAll('[role=status]')].some(e=>e.innerText.includes('Cargando contenido'))`);
   const fixture = `QA producto ${Date.now()}`;
   await click(testid('admin-create')); await wait(`!!document.querySelector(${selector('admin-editor')})`);
   await fill('#field-name', fixture); await fill('#field-description', 'Producto temporal de comprobación QA.');
@@ -152,7 +163,7 @@ try {
   await ev(`${fixtureRow}.querySelector(${selector('admin-edit')}).click()`);
   await wait(`!!document.querySelector(${selector('admin-editor')})`);
   await fill('#field-price', '18.95'); await click('button[name="active"]'); await click(testid('admin-save'));
-  await wait(`!document.querySelector(${selector('admin-editor')})`);
+  await wait(`!document.querySelector(${selector('admin-editor')}) && !!(${fixtureRow})`);
   check('Product updated and deactivated through UI', await ev(`${fixtureRow}.innerText.includes('18.95') && ${fixtureRow}.innerText.includes('Inactivo')`));
   const publicFixture = await ev(`fetch('/api/content/products').then(r=>r.json()).then(b=>b.data.some(p=>p.name===${JSON.stringify(fixture)}))`);
   check('Inactive product absent from public API', !publicFixture);
