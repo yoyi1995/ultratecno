@@ -45,11 +45,12 @@ Con el servidor activo en el puerto 3000:
 
 ```powershell
 npm run lint
+node tests/seo-check.mjs
 node tests/qa-permissions.mjs
 node tests/browser-check.mjs
 ```
 
-La prueba de navegador usa Chrome por defecto. Puedes indicar otro Chromium instalado con `QA_CHROME`. Las capturas y resultados JSON se guardan en `project-state/ultratecno/qa/` cuando se ejecuta desde esta fábrica.
+`tests/seo-check.mjs` comprueba metadata, canonical, Open Graph, sitemap, robots, HTML rastreable, redirecciones permanentes y JSON-LD. La prueba de navegador usa Chrome por defecto. Puedes indicar otro Chromium instalado con `QA_CHROME`. Las capturas y resultados JSON se guardan en `project-state/ultratecno/qa/` cuando se ejecuta desde esta fábrica.
 
 ## Supabase, Cloudinary y despliegue
 
