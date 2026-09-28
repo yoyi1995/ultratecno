@@ -1,3 +1,5 @@
 ﻿import Navbar from '@/components/Navbar'
 import { AboutBlock, PageHeading, Footer, ContactBanner } from '@/components/Site'
+import { seoMetadata } from '@/lib/seo'
+export const metadata=seoMetadata({title:'Quiénes somos | UltraTecno Machala',description:'Conoce UltraTecno, tienda tecnológica y servicio técnico de mantenimiento, reparación y capacitación en Machala, Ecuador.',path:'/quienes-somos',image:'/images/local-ultratecno.jpeg'})
 export default function Page(){return <><Navbar/><main id="main"><PageHeading eyebrow="MÁS ALLÁ DE LA TECNOLOGÍA" title="Cerca de ti. Cerca de tus ideas." description="Somos UltraTecno: productos, servicio técnico y aprendizaje en Machala."/><AboutBlock/><section className="wrap value-grid"><div><h2>Nuestra misión</h2><p>Ayudarte a resolver tus necesidades tecnológicas con atención cercana, diagnóstico claro y soluciones adecuadas para tu equipo.</p></div><div><h2>Lo que nos mueve</h2><p>La responsabilidad, la honestidad y el cuidado de cada trabajo. Escuchamos antes de proponer y explicamos antes de intervenir.</p></div></section><ContactBanner/></main><Footer/></>}

@@ -75,7 +75,7 @@ export default function AdminPage() {
       <div>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-900">Colecciones de contenido</h2>
-          <Link href="/products" target="_blank" className="flex items-center gap-1 text-xs font-semibold text-blue-700 hover:underline">
+          <Link href="/tienda" target="_blank" className="flex items-center gap-1 text-xs font-semibold text-blue-700 hover:underline">
             Ver tienda pública <ExternalLink size={13} />
           </Link>
         </div>

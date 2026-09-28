@@ -1,9 +1,9 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import type { Collection, ContentMap } from '@/lib/types';
-export function useContent<K extends Collection>(collection: K) {
-  const [data,setData] = useState<ContentMap[K][]>([]);
-  const [loading,setLoading] = useState(true);
+export function useContent<K extends Collection>(collection: K, initialData?: ContentMap[K][]) {
+  const [data,setData] = useState<ContentMap[K][]>(initialData ?? []);
+  const [loading,setLoading] = useState(initialData === undefined);
   const [error,setError] = useState<string|null>(null);
   const [mode,setMode] = useState('demo');
   const [revision,setRevision] = useState(0);
